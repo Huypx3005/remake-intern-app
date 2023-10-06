@@ -1,0 +1,22 @@
+.form-input {
+  font-size: 1.0625rem;
+  height: 22px;
+  width: 330px;
+  border: 1px solid #dddfe2;
+  padding: 14px 16px;
+  color: #1d2129;
+  border-radius: 6px;
+  margin: 15px 20px;
+}
+
+.inline {
+  display: inline;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.block {
+  display: block;
+}

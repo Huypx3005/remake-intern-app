@@ -1,0 +1,12 @@
+.nav-item {
+  width: 130px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #757575;
+  margin: 16px;
+}
+
+.nav-icon {
+  font-size: 1.5rem;
+}

@@ -1,0 +1,31 @@
+.users-dashboard {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-name {
+  font-size: 1.5rem;
+  color: #4a85f6;
+}
+
+.dashboard-functions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search {
+  margin-left: 200px;
+}
+
+.filter {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.users-table {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}

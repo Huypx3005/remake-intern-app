@@ -1,0 +1,19 @@
+.hr {
+  margin: 20px auto;
+}
+
+.hr-50 {
+  width: 50%;
+}
+
+.hr-75 {
+  width: 75%;
+}
+
+.hr-90 {
+  width: 90%;
+}
+
+.hr-100 {
+  width: 100%;
+}

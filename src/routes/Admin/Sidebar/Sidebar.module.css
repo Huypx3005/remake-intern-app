@@ -1,0 +1,13 @@
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  margin-top: 40px;
+  margin-bottom: 56px;
+  margin-left: 20px;
+  font-size: 1.25rem;
+  font-weight: bold;
+}

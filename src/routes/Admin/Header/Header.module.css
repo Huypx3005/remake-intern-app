@@ -1,0 +1,29 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.name {
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+
+.greet-nice {
+  opacity: 0.8;
+  color: #757575;
+}
+
+.icons {
+  font-size: 1.5rem;
+}
+
+/* Select all direct child */
+.icons > * {
+  padding: 0 10px;
+}
+
+/* .user {
+  display: flex;
+  flex-direction: column;
+} */
