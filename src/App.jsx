@@ -1,9 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
-import Login from "./routes/Login/Login";
-import Profile from "./routes/Profile/Profile";
-import Admin from "./routes/Admin/Admin";
+import Login from "./pages/Login/Login";
+import Profile from "./pages/Profile/Profile";
+import Admin from "./pages/Admin/Admin";
 
 function App() {
   return (

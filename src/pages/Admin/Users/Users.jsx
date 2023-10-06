@@ -14,12 +14,17 @@ import Table from "./Table";
 import { getUsers } from "../../../firebase/firestore/users";
 
 const Users = () => {
+  const [data, setData] = useState([]); // data get from api
+  const [tableData, setTableData] = useState([]);
   const [formType, setFormType] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [data, setData] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const [selectedOption, setSelectedOption] = useState("");
-  const [tableData, setTableData] = useState([]);
+
+  // loading
+  const [isLoading, setIsLoading] = useState(false);
+
+  //------  for filter ----------
+  const [selectedOption, setSelectedOption] = useState("name"); // name is default value of select
   const [filterValue, setFilterValue] = useState("");
 
   const options = [
@@ -27,44 +32,47 @@ const Users = () => {
     { label: "Gender", value: "gender" },
   ];
 
+  // ----- END filter -----------
+
   useEffect(() => {
+    setIsLoading(true);
     (async () => {
       const users = await getUsers();
       setData(users);
-      setTableData(data);
+      setTableData(users);
+      setIsLoading(false);
     })();
-  }, [data]);
+  }, []);
 
   const handleSelectChange = (e) => {
     setSelectedOption(e.target.value);
   };
 
   const handleClickFilter = () => {
+    setIsLoading(true);
+    let filteredData = [];
     switch (selectedOption) {
       case "name":
-        setTableData(() =>
-          data.filter((item) =>
-            item.name.toLowerCase().includes(filterValue.toLowerCase())
-          )
+        filteredData = data.filter((item) =>
+          item.name.toLowerCase().includes(filterValue.toLowerCase())
         );
+        setTableData(filteredData);
         break;
       case "gender":
-        setTableData(() =>
-          data.filter((item) =>
-            item.gender.toLowerCase().includes(filterValue.toLowerCase())
-          )
+        filteredData = data.filter((item) =>
+          item.gender.toLowerCase().includes(filterValue.toLowerCase())
         );
+        setTableData(filteredData);
         break;
       default:
         break;
     }
-    console.log(filterValue);
-    console.log(tableData);
+    setIsLoading(false);
   };
 
   const clearFilter = () => {
-    setTableData([]);
     setFilterValue("");
+    setTableData(data);
   };
 
   const handleClickAdd = () => {
@@ -90,16 +98,11 @@ const Users = () => {
       <div className={styles["users-dashboard"]}>
         <h2 className={styles["dashboard-name"]}>User</h2>
         <div className={styles["dashboard-functions"]}>
-          <div className={styles["search"]}>
-            <FormInput placeholder="Search" />
-            <Button size="small">Search</Button>
-          </div>
           <Button size="small" onClick={handleClickAdd}>
             Add user+
           </Button>
           <span className={styles["filter"]}>
             <FormInput
-              // ref={filterInputRef}
               type="text"
               value={filterValue}
               onChange={(e) => setFilterValue(e.target.value)}
@@ -129,6 +132,8 @@ const Users = () => {
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
           {formType === "add" || formType === "update" ? (
             <UserForm
+              setData={setData}
+              setTableData={setTableData}
               type={formType}
               setIsModalOpen={setIsModalOpen}
               selectedUserId={selectedUserId}
@@ -138,6 +143,8 @@ const Users = () => {
               action="delete"
               setIsModalOpen={setIsModalOpen}
               selectedUserId={selectedUserId}
+              setData={setData}
+              setTableData={setTableData}
             />
           )}
         </Modal>

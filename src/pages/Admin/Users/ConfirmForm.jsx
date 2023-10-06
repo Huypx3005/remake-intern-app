@@ -2,12 +2,21 @@ import styles from "./Confirm.module.css";
 
 import Button from "../../../components/Button/Button";
 
-import { deleteUser } from "../../../firebase/firestore/users";
+import { getUsers, deleteUser } from "../../../firebase/firestore/users";
 
-const ConfirmForm = ({ action = "delete", setIsModalOpen, selectedUserId }) => {
+const ConfirmForm = ({
+  action = "delete",
+  setIsModalOpen,
+  selectedUserId,
+  setData,
+  setTableData,
+}) => {
   const handleDeleteUser = () => {
     (async () => {
       deleteUser(selectedUserId);
+      const users = await getUsers();
+      setData(users);
+      setTableData(users);
     })();
 
     setIsModalOpen(false);

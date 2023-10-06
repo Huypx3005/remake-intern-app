@@ -9,7 +9,7 @@ const Table = ({ headers, data, handleClickUpdate, handleClickDelete }) => {
         <tr>
           {headers.map((header) => {
             return (
-              <th scope="col" key={header}>
+              <th className={styles["th"]} scope="col" key={header}>
                 {header}
               </th>
             );
@@ -27,8 +27,14 @@ const Table = ({ headers, data, handleClickUpdate, handleClickDelete }) => {
                 <td>{item.gender}</td>
                 <td>
                   <div className={styles["actions"]}>
-                    <AiFillEdit onClick={() => handleClickUpdate(item.id)} />
-                    <AiFillDelete onClick={() => handleClickDelete(item.id)} />
+                    <span className={styles["icon"]}>
+                      <AiFillEdit onClick={() => handleClickUpdate(item.id)} />
+                    </span>
+                    <span className={styles["icon"]}>
+                      <AiFillDelete
+                        onClick={() => handleClickDelete(item.id)}
+                      />
+                    </span>
                   </div>
                 </td>
               </tr>

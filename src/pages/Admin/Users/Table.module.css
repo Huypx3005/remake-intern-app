@@ -9,6 +9,9 @@
   line-height: 50px;
   color: #8f9bb3;
 }
+.th {
+  width: 220px;
+}
 
 .table-row {
   font-size: 0.8rem;
@@ -29,4 +32,8 @@
   justify-content: center;
   gap: 10px;
   color: #8f9bb3;
+}
+
+.icon {
+  cursor: pointer;
 }

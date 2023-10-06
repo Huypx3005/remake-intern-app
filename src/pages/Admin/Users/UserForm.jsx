@@ -6,12 +6,19 @@ import Button from "../../../components/Button/Button";
 import HorizontalLine from "../../../components/HorizontalLine/HorizontalLine";
 
 import {
+  getUsers,
   addUser,
   getUser,
   updateUser,
 } from "../../../firebase/firestore/users";
 
-const UserForm = ({ type, setIsModalOpen, selectedUserId }) => {
+const UserForm = ({
+  type,
+  setIsModalOpen,
+  selectedUserId,
+  setData,
+  setTableData,
+}) => {
   const [formState, setFormState] = useState({
     name: "",
     age: "",
@@ -35,17 +42,23 @@ const UserForm = ({ type, setIsModalOpen, selectedUserId }) => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const { name, age, gender } = formState;
     switch (type) {
       case "add":
         (async () => {
-          addUser(name, age, gender);
+          await addUser(name, age, gender);
+          const users = await getUsers();
+          setData(users);
+          setTableData(users);
         })();
         break;
       case "update":
         (async () => {
-          updateUser(selectedUserId, name, age, gender);
+          await updateUser(selectedUserId, name, age, gender);
+          const users = await getUsers();
+          setData(users);
+          setTableData(users);
         })();
         break;
       default:
