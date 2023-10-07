@@ -25,9 +25,12 @@ const Button = ({
   }
 
   switch (size) {
-    // case "small":
-    //   buttonStyle.push(styles["small"]);
-    //   break;
+    case "very-small":
+      buttonStyle.push(styles["very-small"]);
+      break;
+    case "small":
+      buttonStyle.push(styles["small"]);
+      break;
     case "medium":
       buttonStyle.push(styles["medium"]);
       break;

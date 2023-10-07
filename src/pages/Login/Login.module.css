@@ -1,0 +1,23 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to right, #3498db, #2c3e50);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.no-account {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}

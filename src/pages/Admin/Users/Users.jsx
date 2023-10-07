@@ -6,6 +6,7 @@ import FormInput from "../../../components/FormInput/FormInput";
 import Button from "../../../components/Button/Button";
 import Select from "../../../components/Select/Select";
 import Modal from "../../../components/Modal/Modal";
+import Loading from "../../../components/Loading/Loading";
 
 import UserForm from "./UserForm";
 import ConfirmForm from "./ConfirmForm";
@@ -36,12 +37,16 @@ const Users = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    (async () => {
-      const users = await getUsers();
-      setData(users);
-      setTableData(users);
-      setIsLoading(false);
-    })();
+    try {
+      (async () => {
+        const users = await getUsers();
+        setData(users);
+        setTableData(users);
+        setIsLoading(false);
+      })();
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
   const handleSelectChange = (e) => {
@@ -95,6 +100,7 @@ const Users = () => {
 
   return (
     <>
+      {isLoading && <Loading />}
       <div className={styles["users-dashboard"]}>
         <h2 className={styles["dashboard-name"]}>User</h2>
         <div className={styles["dashboard-functions"]}>
@@ -113,10 +119,10 @@ const Users = () => {
               value={selectedOption}
               onChange={handleSelectChange}
             />
-            <Button size="small" onClick={handleClickFilter}>
+            <Button size="very-small" onClick={handleClickFilter}>
               Filter
             </Button>
-            <Button size="small" onClick={clearFilter}>
+            <Button size="very-small" onClick={clearFilter}>
               Clear filter
             </Button>
           </span>
@@ -137,6 +143,7 @@ const Users = () => {
               type={formType}
               setIsModalOpen={setIsModalOpen}
               selectedUserId={selectedUserId}
+              setIsLoading={setIsLoading}
             />
           ) : (
             <ConfirmForm
@@ -145,6 +152,7 @@ const Users = () => {
               selectedUserId={selectedUserId}
               setData={setData}
               setTableData={setTableData}
+              setIsLoading={setIsLoading}
             />
           )}
         </Modal>

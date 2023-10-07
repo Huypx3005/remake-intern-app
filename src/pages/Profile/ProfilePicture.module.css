@@ -1,0 +1,9 @@
+.picture {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.file-input {
+  font-size: 1.2rem;
+}

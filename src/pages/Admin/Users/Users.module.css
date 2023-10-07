@@ -4,7 +4,7 @@
 }
 
 .dashboard-name {
-  font-size: 1.5rem;
+  font-size: 3rem;
   color: #4a85f6;
 }
 
@@ -12,16 +12,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 50px;
 }
 
 .filter {
   display: flex;
-  gap: 10px;
+  gap: 20px;
   align-items: center;
 }
 
 .users-table {
-  display: flex;
-  justify-content: center;
   margin-top: 40px;
 }

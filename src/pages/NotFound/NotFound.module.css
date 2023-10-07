@@ -1,0 +1,18 @@
+/* NotFound.css */
+
+.not-found-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.h1 {
+  font-size: 8em;
+  color: #e74c3c;
+  margin-bottom: 10px;
+}
+
+.p {
+  font-size: 1.2em;
+  color: #777;
+  margin-bottom: 20px;
+}

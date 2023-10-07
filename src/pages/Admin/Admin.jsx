@@ -4,6 +4,8 @@ import Sidebar from "./Sidebar/Sidebar";
 import Header from "./Header/Header";
 import Users from "./Users/Users";
 
+import Loading from "../../components/Loading/Loading";
+
 const Admin = () => {
   return (
     <main className={styles["container"]}>
@@ -20,6 +22,7 @@ const Admin = () => {
           </div>
         </div>
       </div>
+      {/* <Loading /> */}
     </main>
   );
 };

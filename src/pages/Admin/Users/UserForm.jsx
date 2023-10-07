@@ -18,6 +18,7 @@ const UserForm = ({
   selectedUserId,
   setData,
   setTableData,
+  setIsLoading,
 }) => {
   const [formState, setFormState] = useState({
     name: "",
@@ -46,20 +47,34 @@ const UserForm = ({
     const { name, age, gender } = formState;
     switch (type) {
       case "add":
-        (async () => {
-          await addUser(name, age, gender);
-          const users = await getUsers();
-          setData(users);
-          setTableData(users);
-        })();
+        try {
+          (async () => {
+            setIsLoading(true);
+            await addUser(name, age, gender);
+            const users = await getUsers();
+            setData(users);
+            setTableData(users);
+            setIsLoading(false);
+          })();
+        } catch (error) {
+          console.log(error);
+        }
+
         break;
       case "update":
-        (async () => {
-          await updateUser(selectedUserId, name, age, gender);
-          const users = await getUsers();
-          setData(users);
-          setTableData(users);
-        })();
+        try {
+          (async () => {
+            setIsLoading(true);
+            await updateUser(selectedUserId, name, age, gender);
+            const users = await getUsers();
+            setData(users);
+            setTableData(users);
+            setIsLoading(false);
+          })();
+        } catch (error) {
+          console.log(error);
+        }
+
         break;
       default:
         break;

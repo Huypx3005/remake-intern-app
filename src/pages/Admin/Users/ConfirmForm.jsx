@@ -10,13 +10,16 @@ const ConfirmForm = ({
   selectedUserId,
   setData,
   setTableData,
+  setIsLoading,
 }) => {
   const handleDeleteUser = () => {
     (async () => {
+      setIsLoading(true);
       deleteUser(selectedUserId);
       const users = await getUsers();
       setData(users);
       setTableData(users);
+      setIsLoading(false);
     })();
 
     setIsModalOpen(false);

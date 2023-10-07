@@ -18,12 +18,6 @@
   font-size: 1.5rem;
 }
 
-/* Select all direct child */
 .icons > * {
   padding: 0 10px;
 }
-
-/* .user {
-  display: flex;
-  flex-direction: column;
-} */

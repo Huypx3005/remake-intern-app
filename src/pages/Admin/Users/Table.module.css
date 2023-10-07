@@ -10,7 +10,7 @@
   color: #8f9bb3;
 }
 .th {
-  width: 220px;
+  width: 18vw;
 }
 
 .table-row {
@@ -22,7 +22,7 @@
 
 .table-row > td {
   height: 40px;
-  width: 220px;
+  width: 18;
   vertical-align: middle;
 }
 
