@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import styles from "./Login.module.css";
 
@@ -11,6 +12,8 @@ import Loading from "../../components/Loading/Loading";
 import { useAuth } from "../../contexts/authContext";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const { logIn, signUp, loading } = useAuth();
   const [type, setType] = useState("login"); // type of form: login | sign up
   const [email, setEmail] = useState("");
@@ -19,7 +22,7 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       await logIn(email, password);
-      // navigate("/profile");
+      navigate("/profile");
     } catch (error) {
       console.error("Log-in error:", error.message);
     }
@@ -29,6 +32,7 @@ const Login = () => {
     try {
       await signUp(email, password);
       setType("login");
+      setPassword("");
     } catch (error) {
       console.error("Sign-up error:", error.message);
     }
@@ -71,6 +75,7 @@ const Login = () => {
               <p className={styles["no-account"]}>
                 Not a member?{" "}
                 <Button
+                  variant="success"
                   size="very-small"
                   onClick={() => {
                     setType("signup");
@@ -86,7 +91,7 @@ const Login = () => {
             <div>
               <Button
                 type="submit"
-                variant="primary"
+                variant="success"
                 size="medium"
                 onClick={handleSignUp}
               >

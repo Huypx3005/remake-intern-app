@@ -12,7 +12,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -37,7 +37,14 @@ export const AuthProvider = ({ children }) => {
   const logIn = async (email, password) => {
     try {
       setLoading(true);
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log("from context: ", userCredential.user);
+      setUser(userCredential.user);
+      localStorage.setItem("user", JSON.stringify(userCredential.user));
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -48,6 +55,8 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       await signOut(auth);
+      localStorage.clear();
+      setUser(null);
     } catch (error) {
       setLoading(false);
       console.log(error);

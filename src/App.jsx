@@ -8,22 +8,17 @@ import Profile from "./pages/Profile/Profile";
 import Admin from "./pages/Admin/Admin";
 import NotFound from "./pages/NotFound/NotFound";
 
-import ProtectedRoute from "./routes/ProtectedRoute";
+import ProtectedRoutes from "./routes/ProtectedRoutes";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
-      <Route
-        path="/profile"
-        element={
-          // <ProtectedRoute>
-          <Profile />
-          // </ProtectedRoute>
-        }
-      />
-      <Route path="/admin" element={<Admin />} />
+      <Route element={<ProtectedRoutes />}>
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/admin" element={<Admin />} />
+      </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
