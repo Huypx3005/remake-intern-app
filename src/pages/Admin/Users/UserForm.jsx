@@ -19,6 +19,8 @@ const UserForm = ({
   setData,
   setTableData,
   setIsLoading,
+  showSuccessToast,
+  showErrorToast,
 }) => {
   const [formState, setFormState] = useState({
     name: "",
@@ -29,8 +31,17 @@ const UserForm = ({
   useEffect(() => {
     if (selectedUserId) {
       (async () => {
-        const user = await getUser(selectedUserId);
+        let user;
+        try {
+          setIsLoading(true);
+          user = await getUser(selectedUserId);
+        } catch (error) {
+          setIsLoading(false);
+          showErrorToast();
+          return;
+        }
         setFormState(user);
+        setIsLoading(false);
       })();
     }
   }, []);
@@ -45,36 +56,37 @@ const UserForm = ({
 
   const handleSubmit = async () => {
     const { name, age, gender } = formState;
+    let users;
     switch (type) {
       case "add":
         try {
-          (async () => {
-            setIsLoading(true);
-            await addUser(name, age, gender);
-            const users = await getUsers();
-            setData(users);
-            setTableData(users);
-            setIsLoading(false);
-          })();
+          setIsLoading(true);
+          await addUser(name, age, gender);
+          users = await getUsers();
         } catch (error) {
-          console.log(error);
+          setIsLoading(false);
+          showErrorToast();
+          return;
         }
-
+        setData(users);
+        setTableData(users);
+        setIsLoading(false);
+        showSuccessToast();
         break;
       case "update":
         try {
-          (async () => {
-            setIsLoading(true);
-            await updateUser(selectedUserId, name, age, gender);
-            const users = await getUsers();
-            setData(users);
-            setTableData(users);
-            setIsLoading(false);
-          })();
+          setIsLoading(true);
+          updateUser(selectedUserId, name, age, gender);
+          users = await getUsers();
         } catch (error) {
-          console.log(error);
+          setIsLoading(false);
+          showErrorToast();
+          return;
         }
-
+        setData(users);
+        setTableData(users);
+        setIsLoading(false);
+        showSuccessToast();
         break;
       default:
         break;
@@ -85,42 +97,44 @@ const UserForm = ({
   };
 
   return (
-    <FormWrapper>
-      <FormInput
-        type="text"
-        name="name"
-        value={formState.name}
-        placeholder="name ..."
-        autoComplete="on"
-        display="block"
-        onChange={handleInputChange}
-      />
-      <FormInput
-        type="number"
-        name="age"
-        value={formState.age}
-        placeholder="age ..."
-        display="block"
-        onChange={handleInputChange}
-      />
-      <FormInput
-        type="gender"
-        name="gender"
-        value={formState.gender}
-        placeholder="gender ..."
-        display="block"
-        onChange={handleInputChange}
-      />
-      <HorizontalLine width={75} />
-      <Button
-        type="submit"
-        variant="primary"
-        size="medium"
-        onClick={handleSubmit}
-      >
-        {(type === "add" && "Add") || (type === "update" && "Update")}
-      </Button>
-    </FormWrapper>
+    <div>
+      <FormWrapper>
+        <FormInput
+          type="text"
+          name="name"
+          value={formState.name}
+          placeholder="name ..."
+          autoComplete="on"
+          display="block"
+          onChange={handleInputChange}
+        />
+        <FormInput
+          type="number"
+          name="age"
+          value={formState.age}
+          placeholder="age ..."
+          display="block"
+          onChange={handleInputChange}
+        />
+        <FormInput
+          type="gender"
+          name="gender"
+          value={formState.gender}
+          placeholder="gender ..."
+          display="block"
+          onChange={handleInputChange}
+        />
+        <HorizontalLine width={75} />
+        <Button
+          type="submit"
+          variant="primary"
+          size="medium"
+          onClick={handleSubmit}
+        >
+          {(type === "add" && "Add") || (type === "update" && "Update")}
+        </Button>
+      </FormWrapper>
+    </div>
   );
 };
 

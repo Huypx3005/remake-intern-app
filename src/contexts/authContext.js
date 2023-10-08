@@ -12,12 +12,10 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
-      setLoading(false);
     });
 
     // Cleanup function
@@ -25,46 +23,27 @@ export const AuthProvider = ({ children }) => {
   }, [auth]);
 
   const signUp = async (email, password) => {
-    try {
-      setLoading(true);
-      await createUserWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
+    await createUserWithEmailAndPassword(auth, email, password);
   };
 
   const logIn = async (email, password) => {
-    try {
-      setLoading(true);
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      setUser(userCredential.user);
-      localStorage.setItem("user", JSON.stringify(userCredential.user));
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    setUser(userCredential.user);
+    localStorage.setItem("user", JSON.stringify(userCredential.user));
   };
 
   const logOut = async () => {
-    try {
-      setLoading(true);
-      await signOut(auth);
-      localStorage.clear();
-      setUser(null);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
+    await signOut(auth);
+    localStorage.clear();
+    setUser(null);
   };
 
   const value = {
     user,
-    loading,
     signUp,
     logIn,
     logOut,

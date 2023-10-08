@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import styles from "./Users.module.css";
 
 import FormInput from "../../../components/FormInput/FormInput";
@@ -36,17 +39,20 @@ const Users = () => {
   // ----- END filter -----------
 
   useEffect(() => {
-    setIsLoading(true);
-    try {
-      (async () => {
-        const users = await getUsers();
-        setData(users);
-        setTableData(users);
+    (async () => {
+      let users;
+      try {
+        setIsLoading(true);
+        users = await getUsers();
+      } catch (e) {
         setIsLoading(false);
-      })();
-    } catch (error) {
-      console.log(error);
-    }
+        showErrorToast();
+        return;
+      }
+      setData(users);
+      setTableData(users);
+      setIsLoading(false);
+    })();
   }, []);
 
   const handleSelectChange = (e) => {
@@ -98,6 +104,24 @@ const Users = () => {
     setIsModalOpen(true);
   };
 
+  const showSuccessToast = () => {
+    toast.success("successful", {
+      data: {
+        title: "Success toast",
+        text: "This is a success message",
+      },
+    });
+  };
+
+  const showErrorToast = () => {
+    toast.error("Error", {
+      data: {
+        title: "Error toast",
+        text: "This is an error message",
+      },
+    });
+  };
+
   return (
     <>
       {isLoading && <Loading />}
@@ -144,6 +168,8 @@ const Users = () => {
               setIsModalOpen={setIsModalOpen}
               selectedUserId={selectedUserId}
               setIsLoading={setIsLoading}
+              showSuccessToast={showSuccessToast}
+              showErrorToast={showErrorToast}
             />
           ) : (
             <ConfirmForm
@@ -153,9 +179,12 @@ const Users = () => {
               setData={setData}
               setTableData={setTableData}
               setIsLoading={setIsLoading}
+              showSuccessToast={showSuccessToast}
+              showErrorToast={showErrorToast}
             />
           )}
         </Modal>
+        <ToastContainer />
       </div>
     </>
   );

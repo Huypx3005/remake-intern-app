@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import styles from "./Login.module.css";
 
 import Button from "../../components/Button/Button";
@@ -16,7 +19,8 @@ import { fetchUser } from "../../utils/fetchUser";
 const Login = () => {
   const navigate = useNavigate();
 
-  const { logIn, signUp, loading } = useAuth();
+  const { logIn, signUp } = useAuth();
+  const [loading, setLoading] = useState(false);
   const [type, setType] = useState("login"); // type of form: login | sign up
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,23 +34,48 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
+      setLoading(true);
       await logIn(email, password);
       navigate("/profile");
     } catch (error) {
-      console.error("Log-in error:", error.message);
+      setLoading(false);
+      return;
     }
+    setLoading(false);
   };
 
   const handleSignUp = async () => {
     try {
+      setLoading(true);
       await signUp(email, password);
-      setType("login");
-      setPassword("");
     } catch (error) {
-      console.error("Sign-up error:", error.message);
+      setLoading(false);
+      showErrorToast();
+      return;
     }
+    setLoading(false);
+    setType("login");
+    setPassword("");
+    showSuccessToast();
   };
 
+  const showSuccessToast = () => {
+    toast.success("successful", {
+      data: {
+        title: "Success toast",
+        text: "This is a success message",
+      },
+    });
+  };
+
+  const showErrorToast = () => {
+    toast.error("Error", {
+      data: {
+        title: "Error toast",
+        text: "This is an error message",
+      },
+    });
+  };
   return (
     <div className={styles["container"]}>
       {loading && <Loading />}
@@ -122,6 +151,7 @@ const Login = () => {
             </div>
           )}
         </FormWrapper>
+        <ToastContainer />
       </div>
     </div>
   );
