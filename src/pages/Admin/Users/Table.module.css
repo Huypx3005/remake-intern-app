@@ -1,6 +1,12 @@
+.container {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 .table {
   text-align: center;
   border: 1px solid rgba(0, 0, 0, 0.2);
+  overflow: auto;
 }
 
 .table-heading {

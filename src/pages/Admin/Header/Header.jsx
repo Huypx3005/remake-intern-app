@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import { IoMdNotifications } from "react-icons/io";
 import { RxDividerVertical } from "react-icons/rx";
 import { HiMiniUserCircle } from "react-icons/hi2";
@@ -20,7 +22,9 @@ const Header = () => {
         <div className={styles["icons"]}>
           <IoMdNotifications />
           <RxDividerVertical />
-          <HiMiniUserCircle />
+          <Link to="/profile">
+            <HiMiniUserCircle />
+          </Link>
           <FaAngleDown />
         </div>
       </div>
