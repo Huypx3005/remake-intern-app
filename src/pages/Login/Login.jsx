@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./Login.module.css";
@@ -11,6 +11,8 @@ import Loading from "../../components/Loading/Loading";
 
 import { useAuth } from "../../contexts/authContext";
 
+import { fetchUser } from "../../utils/fetchUser";
+
 const Login = () => {
   const navigate = useNavigate();
 
@@ -18,6 +20,13 @@ const Login = () => {
   const [type, setType] = useState("login"); // type of form: login | sign up
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const user = fetchUser();
+    if (user) {
+      navigate("/profile");
+    }
+  }, []);
 
   const handleLogin = async () => {
     try {

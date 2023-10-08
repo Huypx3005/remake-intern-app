@@ -34,3 +34,14 @@
 }
 
 /* Add more styles for the profile content as needed */
+.editor {
+  margin-top: 40px;
+}
+
+.preview {
+  margin-top: 20px;
+}
+
+.preview-value {
+  margin-top: 20px;
+}

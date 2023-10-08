@@ -5,11 +5,15 @@ import styles from "./Profile.module.css";
 
 import { useAuth } from "../../contexts/authContext";
 
-import ProfilePicture from "./ProfilePicture";
 import Loading from "../../components/Loading/Loading";
+import QuillEditor from "../../components/QuillEditor/QuillEditor";
+
+import ProfilePicture from "./ProfilePicture";
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [description, setDescription] = useState("");
+
   const { logOut, user } = useAuth();
   const navigate = useNavigate();
 
@@ -19,13 +23,16 @@ const Profile = () => {
       await logOut();
       // Handle successful sign-out, e.g., redirect or update UI
       setIsLoading(true);
-      console.log("User signed out successfully.");
       navigate("/login");
     } catch (error) {
       setIsLoading(false);
       // Handle sign-out error, e.g., display an error message
       console.error("Sign-out error:", error.message);
     }
+  };
+
+  const handleDescriptionChange = (value) => {
+    setDescription(value);
   };
 
   return (
@@ -39,6 +46,16 @@ const Profile = () => {
       <div className={styles["profile-content"]}>
         {/* Add more profile content here */}
         <ProfilePicture />
+        <div className={styles["editor"]}>
+          <QuillEditor value={description} onChange={handleDescriptionChange} />
+          <div className={styles["preview"]}>
+            <h3>Description Preview</h3>
+            <div
+              className={styles["preview-value"]}
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

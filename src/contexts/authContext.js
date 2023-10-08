@@ -42,7 +42,6 @@ export const AuthProvider = ({ children }) => {
         email,
         password
       );
-      console.log("from context: ", userCredential.user);
       setUser(userCredential.user);
       localStorage.setItem("user", JSON.stringify(userCredential.user));
     } catch (error) {
