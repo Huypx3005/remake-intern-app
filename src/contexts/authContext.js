@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 
 import { auth } from "../firebase/firebase";
@@ -16,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
+      localStorage.setItem("user", JSON.stringify(user));
     });
 
     // Cleanup function
@@ -42,11 +44,21 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updateUserProfile = async (description, photoUrl) => {
+    await updateProfile(auth.currentUser, {
+      displayName: description,
+      photoURL: "https://example.com/jane-q-user/profile.jpg",
+    });
+
+    localStorage.setItem("user", JSON.stringify(auth.currentUser));
+  };
+
   const value = {
     user,
     signUp,
     logIn,
     logOut,
+    updateUserProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

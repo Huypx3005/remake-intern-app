@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./Profile.module.css";
@@ -11,30 +11,52 @@ import Button from "../../components/Button/Button";
 
 import ProfilePicture from "./ProfilePicture";
 
-const Profile = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [description, setDescription] = useState("");
+import { fetchUser } from "../../utils/fetchUser";
 
-  const { logOut, user } = useAuth();
-  console.log(user);
+const Profile = () => {
+  let user = {};
+
+  const [isLoading, setIsLoading] = useState(false);
+  const { logOut, updateUserProfile } = useAuth();
+  const [description, setDescription] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    user = fetchUser();
+    setDescription(user?.displayName);
+  }, []);
 
   const handleSignOut = async () => {
     try {
       setIsLoading(true);
       await logOut();
       // Handle successful sign-out, e.g., redirect or update UI
-      setIsLoading(true);
       navigate("/login");
     } catch (error) {
       setIsLoading(false);
       // Handle sign-out error, e.g., display an error message
       console.error("Sign-out error:", error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleDescriptionChange = (value) => {
     setDescription(value);
+  };
+
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+      await updateUserProfile(description);
+      // Handle successful sign-out, e.g., redirect or update UI
+    } catch (error) {
+      setIsLoading(false);
+      // Handle sign-out error, e.g., display an error message
+      console.error("Sign-out error:", error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -59,6 +81,9 @@ const Profile = () => {
               dangerouslySetInnerHTML={{ __html: description }}
             />
           </div>
+          <Button size="very-small" onClick={handleSave}>
+            Save
+          </Button>
         </div>
       </div>
     </div>

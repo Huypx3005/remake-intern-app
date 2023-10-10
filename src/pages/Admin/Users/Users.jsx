@@ -49,14 +49,16 @@ const Users = () => {
       try {
         setIsLoading(true);
         users = await getUsers();
+        setData(users);
+        setTableData(users);
+        setIsLoading(false);
       } catch (e) {
         setIsLoading(false);
         showErrorToast(e.message);
         return;
+      } finally {
+        setIsLoading(false);
       }
-      setData(users);
-      setTableData(users);
-      setIsLoading(false);
     })();
   }, []);
 
