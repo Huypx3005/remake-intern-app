@@ -12,7 +12,6 @@ import ProtectedRoutes from "./routes/ProtectedRoutes";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route element={<ProtectedRoutes />}>
         <Route path="/profile" element={<Profile />} />

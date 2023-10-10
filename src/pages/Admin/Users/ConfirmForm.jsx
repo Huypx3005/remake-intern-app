@@ -10,6 +10,7 @@ const ConfirmForm = ({
   selectedUserId,
   setData,
   setTableData,
+  isLoading,
   setIsLoading,
   showSuccessToast,
   showErrorToast,
@@ -24,13 +25,13 @@ const ConfirmForm = ({
     } catch (error) {
       setIsLoading(false);
       setIsModalOpen(false);
-      showErrorToast();
+      showErrorToast(error.message);
       return;
     }
     setData(users);
     setTableData(users);
     setIsLoading(false);
-    showSuccessToast();
+    showSuccessToast("Delete user successfully");
     setIsModalOpen(false);
   };
 
@@ -38,10 +39,19 @@ const ConfirmForm = ({
     <div className={styles["confirm"]}>
       <p className="warning">Do you want to {action}?</p>
       <div className={styles["selections"]}>
-        <Button variant="danger" size="small" onClick={handleDeleteUser}>
+        <Button
+          variant="danger"
+          size="small"
+          onClick={handleDeleteUser}
+          isLoading={isLoading}
+        >
           Yes
         </Button>
-        <Button size="small" onClick={() => setIsModalOpen(false)}>
+        <Button
+          size="small"
+          onClick={() => setIsModalOpen(false)}
+          isLoading={isLoading}
+        >
           No
         </Button>
       </div>

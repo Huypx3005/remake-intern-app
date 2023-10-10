@@ -23,7 +23,14 @@ const ProfilePicture = () => {
         .catch((error) => {
           // Handle the case where the user doesn't have a profile picture yet
           if (error.code === "storage/object-not-found") {
-            console.log("User does not have a profile picture yet.");
+            let imageRef = ref(storage, `profilePictures/avatar.png`);
+            getDownloadURL(imageRef)
+              .then((url) => {
+                setImageUrl(url);
+              })
+              .catch((e) => {
+                console.log(e.message);
+              });
           } else {
             console.error("Error fetching profile picture:", error.message);
           }

@@ -31,6 +31,8 @@ const Users = () => {
   const [selectedOption, setSelectedOption] = useState("name"); // name is default value of select
   const [filterValue, setFilterValue] = useState("");
 
+  const tableHeaders = ["User ID", "Name", "Age", "Gender", "Action"];
+
   const options = [
     { label: "Name", value: "name" },
     { label: "Gender", value: "gender" },
@@ -46,7 +48,7 @@ const Users = () => {
         users = await getUsers();
       } catch (e) {
         setIsLoading(false);
-        showErrorToast();
+        showErrorToast(e.message);
         return;
       }
       setData(users);
@@ -104,8 +106,8 @@ const Users = () => {
     setIsModalOpen(true);
   };
 
-  const showSuccessToast = () => {
-    toast.success("successful", {
+  const showSuccessToast = (message) => {
+    toast.success(message || "successful", {
       data: {
         title: "Success toast",
         text: "This is a success message",
@@ -113,8 +115,8 @@ const Users = () => {
     });
   };
 
-  const showErrorToast = () => {
-    toast.error("Error", {
+  const showErrorToast = (message) => {
+    toast.error(message || "Error", {
       data: {
         title: "Error toast",
         text: "This is an error message",
@@ -128,7 +130,7 @@ const Users = () => {
       <div className={styles["users-dashboard"]}>
         <h2 className={styles["dashboard-name"]}>User</h2>
         <div className={styles["dashboard-functions"]}>
-          <Button size="small" onClick={handleClickAdd}>
+          <Button size="small" onClick={handleClickAdd} isLoading={isLoading}>
             Add user+
           </Button>
           <span className={styles["filter"]}>
@@ -143,17 +145,25 @@ const Users = () => {
               value={selectedOption}
               onChange={handleSelectChange}
             />
-            <Button size="very-small" onClick={handleClickFilter}>
+            <Button
+              size="very-small"
+              onClick={handleClickFilter}
+              isLoading={isLoading}
+            >
               Filter
             </Button>
-            <Button size="very-small" onClick={clearFilter}>
+            <Button
+              size="very-small"
+              onClick={clearFilter}
+              isLoading={isLoading}
+            >
               Clear filter
             </Button>
           </span>
         </div>
         <div className={styles["users-table"]}>
           <Table
-            headers={["User ID", "Name", "Age", "Gender", "Action"]}
+            headers={tableHeaders}
             data={tableData}
             handleClickUpdate={handleClickUpdate}
             handleClickDelete={handleClickDelete}
@@ -167,6 +177,7 @@ const Users = () => {
               type={formType}
               setIsModalOpen={setIsModalOpen}
               selectedUserId={selectedUserId}
+              isLoading={isLoading}
               setIsLoading={setIsLoading}
               showSuccessToast={showSuccessToast}
               showErrorToast={showErrorToast}
@@ -178,6 +189,7 @@ const Users = () => {
               selectedUserId={selectedUserId}
               setData={setData}
               setTableData={setTableData}
+              isLoading={isLoading}
               setIsLoading={setIsLoading}
               showSuccessToast={showSuccessToast}
               showErrorToast={showErrorToast}

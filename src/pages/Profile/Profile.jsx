@@ -7,6 +7,7 @@ import { useAuth } from "../../contexts/authContext";
 
 import Loading from "../../components/Loading/Loading";
 import QuillEditor from "../../components/QuillEditor/QuillEditor";
+import Button from "../../components/Button/Button";
 
 import ProfilePicture from "./ProfilePicture";
 
@@ -40,7 +41,9 @@ const Profile = () => {
       {isLoading && <Loading />}
       <div className={styles["profile-header"]}>
         <h2>Welcome, {user?.email}!</h2>
-        <button onClick={handleSignOut}>Sign Out</button>
+        <Button onClick={handleSignOut} size="small">
+          Sign Out
+        </Button>
       </div>
 
       <div className={styles["profile-content"]}>

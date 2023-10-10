@@ -35,15 +35,15 @@
 
 /* Color */
 .primary {
-  background-color: #1877f2;
+  background-color: var(--primary-color);
 }
 
 .success {
-  background-color: #42b72a;
+  background-color: var(--success-color);
 }
 
 .danger {
-  background-color: #f21818;
+  background-color: var(--danger-color);
 }
 
 /* Disabled */

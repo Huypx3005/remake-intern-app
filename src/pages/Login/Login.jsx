@@ -39,9 +39,11 @@ const Login = () => {
       navigate("/profile");
     } catch (error) {
       setLoading(false);
+      showErrorToast(error.message);
       return;
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleSignUp = async () => {
@@ -50,17 +52,17 @@ const Login = () => {
       await signUp(email, password);
     } catch (error) {
       setLoading(false);
-      showErrorToast();
+      showErrorToast(error.message);
       return;
     }
     setLoading(false);
     setType("login");
     setPassword("");
-    showSuccessToast();
+    showSuccessToast("Login Success");
   };
 
-  const showSuccessToast = () => {
-    toast.success("successful", {
+  const showSuccessToast = (message) => {
+    toast.success(message || "successful", {
       data: {
         title: "Success toast",
         text: "This is a success message",
@@ -68,8 +70,8 @@ const Login = () => {
     });
   };
 
-  const showErrorToast = () => {
-    toast.error("Error", {
+  const showErrorToast = (message) => {
+    toast.error(message || "Error", {
       data: {
         title: "Error toast",
         text: "This is an error message",
@@ -107,6 +109,7 @@ const Login = () => {
                 variant="primary"
                 size="medium"
                 onClick={handleLogin}
+                isLoading={loading}
               >
                 Log in
               </Button>
@@ -120,6 +123,7 @@ const Login = () => {
                     setEmail("");
                     setPassword("");
                   }}
+                  isLoading={loading}
                 >
                   Sign up
                 </Button>
@@ -132,6 +136,7 @@ const Login = () => {
                 variant="success"
                 size="medium"
                 onClick={handleSignUp}
+                isLoading={loading}
               >
                 Sign up
               </Button>
@@ -144,6 +149,7 @@ const Login = () => {
                     setEmail("");
                     setPassword("");
                   }}
+                  isLoading={loading}
                 >
                   Log in
                 </Button>

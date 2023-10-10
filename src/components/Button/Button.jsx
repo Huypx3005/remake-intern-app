@@ -4,7 +4,7 @@ const Button = ({
   type,
   variant = "primary",
   size = "medium",
-  disabled = false,
+  isLoading = false,
   onClick,
   children,
 }) => {
@@ -41,10 +41,15 @@ const Button = ({
       break;
   }
 
-  disabled && buttonStyle.push(styles["disabled"]);
+  isLoading && buttonStyle.push(styles["disabled"]);
 
   return (
-    <button type={type} className={buttonStyle.join(" ")} onClick={onClick}>
+    <button
+      type={type}
+      className={buttonStyle.join(" ")}
+      onClick={onClick}
+      disabled={isLoading}
+    >
       {children}
     </button>
   );

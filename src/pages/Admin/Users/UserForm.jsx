@@ -13,11 +13,11 @@ import {
 } from "../../../firebase/firestore/users";
 
 const UserForm = ({
-  type,
   setIsModalOpen,
   selectedUserId,
   setData,
   setTableData,
+  isLoading,
   setIsLoading,
   showSuccessToast,
   showErrorToast,
@@ -37,7 +37,7 @@ const UserForm = ({
           user = await getUser(selectedUserId);
         } catch (error) {
           setIsLoading(false);
-          showErrorToast();
+          showErrorToast(error.message);
           return;
         }
         setFormState(user);
@@ -57,39 +57,34 @@ const UserForm = ({
   const handleSubmit = async () => {
     const { name, age, gender } = formState;
     let users;
-    switch (type) {
-      case "add":
-        try {
-          setIsLoading(true);
-          await addUser(name, age, gender);
-          users = await getUsers();
-        } catch (error) {
-          setIsLoading(false);
-          showErrorToast();
-          return;
-        }
-        setData(users);
-        setTableData(users);
+    if (selectedUserId) {
+      try {
+        setIsLoading(true);
+        updateUser(selectedUserId, name, age, gender);
+        users = await getUsers();
+      } catch (error) {
         setIsLoading(false);
-        showSuccessToast();
-        break;
-      case "update":
-        try {
-          setIsLoading(true);
-          updateUser(selectedUserId, name, age, gender);
-          users = await getUsers();
-        } catch (error) {
-          setIsLoading(false);
-          showErrorToast();
-          return;
-        }
-        setData(users);
-        setTableData(users);
+        showErrorToast(error.message);
+        return;
+      }
+      setData(users);
+      setTableData(users);
+      setIsLoading(false);
+      showSuccessToast("Update user successfully");
+    } else {
+      try {
+        setIsLoading(true);
+        await addUser(name, age, gender);
+        users = await getUsers();
+      } catch (error) {
         setIsLoading(false);
-        showSuccessToast();
-        break;
-      default:
-        break;
+        showErrorToast(error.message);
+        return;
+      }
+      setData(users);
+      setTableData(users);
+      setIsLoading(false);
+      showSuccessToast("Add user successfully");
     }
 
     // close modal
@@ -130,8 +125,9 @@ const UserForm = ({
           variant="primary"
           size="medium"
           onClick={handleSubmit}
+          isLoading={isLoading}
         >
-          {(type === "add" && "Add") || (type === "update" && "Update")}
+          {selectedUserId ? "Update" : "Add"}
         </Button>
       </FormWrapper>
     </div>
