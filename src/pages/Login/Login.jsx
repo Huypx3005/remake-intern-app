@@ -15,6 +15,11 @@ import Loading from "../../components/Loading/Loading";
 import { useAuth } from "../../contexts/authContext";
 
 import { fetchUser } from "../../utils/fetchUser";
+import {
+  emailValidator,
+  passwordValidator,
+  confirmPasswordValidator,
+} from "../../utils/validators";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,6 +29,7 @@ const Login = () => {
   const [type, setType] = useState("login"); // type of form: login | sign up
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     const user = fetchUser();
@@ -32,7 +38,29 @@ const Login = () => {
     }
   }, []);
 
+  const validate = (email, password) => {
+    let err = "";
+    const emailVal = emailValidator(email);
+    const passwordVal = passwordValidator(password);
+
+    if (emailVal) {
+      err += emailVal;
+    }
+
+    if (passwordVal) {
+      err ? (err += ` - ${passwordVal}`) : (err += passwordVal);
+    }
+
+    return err;
+  };
+
   const handleLogin = async () => {
+    const err = validate(email, password);
+    if (err) {
+      showErrorToast(err);
+      return;
+    }
+
     try {
       setLoading(true);
       await logIn(email, password);
@@ -47,6 +75,13 @@ const Login = () => {
   };
 
   const handleSignUp = async () => {
+    let err = validate(email, password);
+    err += confirmPasswordValidator(confirmPassword, password);
+    if (err) {
+      showErrorToast(err);
+      return;
+    }
+
     try {
       setLoading(true);
       await signUp(email, password);
@@ -100,6 +135,16 @@ const Login = () => {
             display="block"
             onChange={(e) => setPassword(e.target.value)}
           />
+          {type === "signup" ? (
+            <FormInput
+              type="password"
+              name="password"
+              value={confirmPassword}
+              placeholder="confirm password"
+              display="block"
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          ) : null}
           <HorizontalLine width={75} />
 
           {type === "login" ? (

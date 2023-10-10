@@ -13,6 +13,8 @@ import {
 } from "../../../firebase/firestore/users";
 import Select from "../../../components/Select/Select";
 
+import { userFormValidator } from "../../../utils/validators";
+
 const UserForm = ({
   setIsModalOpen,
   selectedUserId,
@@ -68,6 +70,13 @@ const UserForm = ({
 
   const handleSubmit = async () => {
     const { name, age } = formState;
+
+    const err = userFormValidator(name, age);
+    if (err) {
+      showErrorToast(err);
+      return;
+    }
+
     let users;
     if (selectedUserId) {
       try {

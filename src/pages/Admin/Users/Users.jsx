@@ -81,10 +81,24 @@ const Users = () => {
         setTableData(filteredData);
         break;
       case "age":
-        filteredData = data.filter(
-          (item) => item.age >= ageFrom && item.age <= ageTo
-        );
-        setTableData(filteredData);
+        if (ageFrom && !ageTo) {
+          filteredData = data.filter(
+            (item) => Number(item.age) >= Number(ageFrom)
+          );
+          setTableData(filteredData);
+        } else if (ageTo && !ageFrom) {
+          filteredData = data.filter(
+            (item) => Number(item.age) <= Number(ageTo)
+          );
+          setTableData(filteredData);
+        } else {
+          filteredData = data.filter(
+            (item) =>
+              Number(item.age) >= Number(ageFrom) &&
+              Number(item.age) <= Number(ageTo)
+          );
+          setTableData(filteredData);
+        }
         break;
       default:
         break;
