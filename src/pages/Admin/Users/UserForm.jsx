@@ -11,6 +11,7 @@ import {
   getUser,
   updateUser,
 } from "../../../firebase/firestore/users";
+import Select from "../../../components/Select/Select";
 
 const UserForm = ({
   setIsModalOpen,
@@ -25,8 +26,18 @@ const UserForm = ({
   const [formState, setFormState] = useState({
     name: "",
     age: "",
-    gender: "",
   });
+
+  // gender select
+  const options = [
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" },
+    { label: "Optional", value: "optional" },
+  ];
+  const [selectedOption, setSelectedOption] = useState("male");
+  const handleSelectChange = (e) => {
+    setSelectedOption(e.target.value);
+  };
 
   useEffect(() => {
     if (selectedUserId) {
@@ -40,6 +51,7 @@ const UserForm = ({
           showErrorToast(error.message);
           return;
         }
+        setSelectedOption(user?.gender);
         setFormState(user);
         setIsLoading(false);
       })();
@@ -55,12 +67,12 @@ const UserForm = ({
   };
 
   const handleSubmit = async () => {
-    const { name, age, gender } = formState;
+    const { name, age } = formState;
     let users;
     if (selectedUserId) {
       try {
         setIsLoading(true);
-        updateUser(selectedUserId, name, age, gender);
+        updateUser(selectedUserId, name, age, selectedOption);
         users = await getUsers();
       } catch (error) {
         setIsLoading(false);
@@ -74,7 +86,7 @@ const UserForm = ({
     } else {
       try {
         setIsLoading(true);
-        await addUser(name, age, gender);
+        await addUser(name, age, selectedOption);
         users = await getUsers();
       } catch (error) {
         setIsLoading(false);
@@ -111,13 +123,10 @@ const UserForm = ({
           display="block"
           onChange={handleInputChange}
         />
-        <FormInput
-          type="gender"
-          name="gender"
-          value={formState.gender}
-          placeholder="gender ..."
-          display="block"
-          onChange={handleInputChange}
+        <Select
+          options={options}
+          value={selectedOption}
+          onChange={handleSelectChange}
         />
         <HorizontalLine width={75} />
         <Button

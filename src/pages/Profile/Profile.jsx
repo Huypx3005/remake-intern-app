@@ -16,6 +16,7 @@ const Profile = () => {
   const [description, setDescription] = useState("");
 
   const { logOut, user } = useAuth();
+  console.log(user);
   const navigate = useNavigate();
 
   const handleSignOut = async () => {

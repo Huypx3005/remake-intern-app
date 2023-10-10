@@ -30,12 +30,15 @@ const Users = () => {
   //------  for filter ----------
   const [selectedOption, setSelectedOption] = useState("name"); // name is default value of select
   const [filterValue, setFilterValue] = useState("");
+  const [ageFrom, setAgeFrom] = useState("");
+  const [ageTo, setAgeTo] = useState("");
 
   const tableHeaders = ["User ID", "Name", "Age", "Gender", "Action"];
 
   const options = [
     { label: "Name", value: "name" },
     { label: "Gender", value: "gender" },
+    { label: "Age", value: "age" },
   ];
 
   // ----- END filter -----------
@@ -77,6 +80,12 @@ const Users = () => {
         );
         setTableData(filteredData);
         break;
+      case "age":
+        filteredData = data.filter(
+          (item) => item.age >= ageFrom && item.age <= ageTo
+        );
+        setTableData(filteredData);
+        break;
       default:
         break;
     }
@@ -85,6 +94,8 @@ const Users = () => {
 
   const clearFilter = () => {
     setFilterValue("");
+    setAgeFrom("");
+    setAgeTo("");
     setTableData(data);
   };
 
@@ -134,31 +145,53 @@ const Users = () => {
             Add user+
           </Button>
           <span className={styles["filter"]}>
-            <FormInput
-              type="text"
-              value={filterValue}
-              onChange={(e) => setFilterValue(e.target.value)}
-            />
-            <span>Filter by:</span>
+            <span className={styles["filter-p"]}>Filter by:</span>
             <Select
               options={options}
               value={selectedOption}
               onChange={handleSelectChange}
             />
-            <Button
-              size="very-small"
-              onClick={handleClickFilter}
-              isLoading={isLoading}
-            >
-              Filter
-            </Button>
-            <Button
-              size="very-small"
-              onClick={clearFilter}
-              isLoading={isLoading}
-            >
-              Clear filter
-            </Button>
+            {selectedOption === "age" ? (
+              <span className={styles["age-input"]}>
+                <FormInput
+                  type="number"
+                  size="small"
+                  value={ageFrom}
+                  placeholder="from"
+                  onChange={(e) => setAgeFrom(e.target.value)}
+                />
+                <FormInput
+                  size="small"
+                  type="number"
+                  value={ageTo}
+                  placeholder="to"
+                  onChange={(e) => setAgeTo(e.target.value)}
+                />
+              </span>
+            ) : (
+              <FormInput
+                size="medium"
+                type="text"
+                value={filterValue}
+                onChange={(e) => setFilterValue(e.target.value)}
+              />
+            )}
+            <span className={styles["filter-button"]}>
+              <Button
+                size="very-small"
+                onClick={handleClickFilter}
+                isLoading={isLoading}
+              >
+                Filter
+              </Button>
+              <Button
+                size="very-small"
+                onClick={clearFilter}
+                isLoading={isLoading}
+              >
+                Clear filter
+              </Button>
+            </span>
           </span>
         </div>
         <div className={styles["users-table"]}>
