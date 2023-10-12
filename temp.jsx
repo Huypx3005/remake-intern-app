@@ -7,10 +7,6 @@ const Table = ({ headers, data, handleClickUpdate, handleClickDelete }) => {
   const [visibleData, setVisibleData] = useState(data.slice(0, 10));
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    setVisibleData(data.slice(0, 10));
-  }, [data]);
-
   const handleScroll = useCallback(() => {
     if (
       containerRef.current.scrollTop + containerRef.current.clientHeight >=
@@ -20,7 +16,7 @@ const Table = ({ headers, data, handleClickUpdate, handleClickDelete }) => {
       const newData = data.slice(currentLength, currentLength + 10);
       setVisibleData((prevData) => [...prevData, ...newData]);
     }
-  }, [visibleData]);
+  }, [data, visibleData]);
 
   useEffect(() => {
     if (containerRef.current) {
