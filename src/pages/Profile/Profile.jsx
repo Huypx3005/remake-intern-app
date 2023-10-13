@@ -3,14 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 import styles from "./Profile.module.css";
 
-import { useAuth } from "../../contexts/authContext";
-
 import Loading from "../../components/Loading/Loading";
 import QuillEditor from "../../components/QuillEditor/QuillEditor";
 import Button from "../../components/Button/Button";
 
 import ProfilePicture from "./ProfilePicture";
 
+import { useAuth } from "../../contexts/authContext";
 import {
   checkDescIsExist,
   getDescription,
@@ -18,8 +17,10 @@ import {
   addDescription,
 } from "../../firebase/firestore/description";
 
+import { showSuccessToast } from "../../utils/showToasts";
+
 const Profile = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { logOut, user } = useAuth();
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
@@ -28,32 +29,33 @@ const Profile = () => {
     (async () => {
       try {
         if (await checkDescIsExist(user.uid)) {
-          setIsLoading(true);
+          setLoading(true);
           const description = await getDescription(user.uid);
           setDescription(description.content);
         } else {
           await addDescription(user.uid);
         }
       } catch (error) {
-        setIsLoading(false);
+        setLoading(false);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     })();
   }, []);
 
   const handleSignOut = async () => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       await logOut();
+      showSuccessToast("Sign out successfully");
       // Handle successful sign-out, e.g., redirect or update UI
       navigate("/login");
     } catch (error) {
-      setIsLoading(false);
+      setLoading(false);
       // Handle sign-out error, e.g., display an error message
-      console.error("Sign-out error:", error.message);
+      console.log("Sign-out error:", error.message);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -63,22 +65,22 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      console.log("from ui: ", user.uid);
-      setIsLoading(true);
+      setLoading(true);
       await updateDescription(user.uid, description);
       // Handle successful sign-out, e.g., redirect or update UI
+      showSuccessToast("Save Success");
     } catch (error) {
-      setIsLoading(false);
+      setLoading(false);
       // Handle sign-out error, e.g., display an error message
-      console.error("Save error:", error.message);
+      console.log("Save error:", error.message);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
     <div className={styles["profile-container"]}>
-      {isLoading && <Loading />}
+      {loading && <Loading />}
       <div className={styles["profile-header"]}>
         <h2>Welcome, {user && user.email}!</h2>
         <Button onClick={handleSignOut} size="small">

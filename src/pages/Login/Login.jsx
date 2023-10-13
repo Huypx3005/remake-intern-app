@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import styles from "./Login.module.css";
@@ -10,7 +9,6 @@ import Button from "../../components/Button/Button";
 import FormInput from "../../components/FormInput/FormInput";
 import FormWrapper from "../../components/FormWrapper/FormWrapper";
 import HorizontalLine from "../../components/HorizontalLine/HorizontalLine";
-import Loading from "../../components/Loading/Loading";
 
 import { useAuth } from "../../contexts/authContext";
 
@@ -19,23 +17,33 @@ import {
   passwordValidator,
   confirmPasswordValidator,
 } from "../../utils/validators";
+import { showSuccessToast, showErrorToast } from "../../utils/showToasts.js";
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const { logIn, signUp, user } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const { logIn, signUp, user, setLoading } = useAuth();
+
   const [type, setType] = useState("login"); // type of form: login | sign up
+
+  // input
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // redirect to profile page if user is logged in
   useEffect(() => {
     if (user) {
       navigate("/profile");
     }
   }, []);
 
+  /**
+   * Validate user input
+   * @param {string} email
+   * @param {string} password
+   * @returns {string} err message
+   */
   const validate = (email, password) => {
     let err = "";
     const emailVal = emailValidator(email);
@@ -52,68 +60,64 @@ const Login = () => {
     return err;
   };
 
+  /**
+   * Handle login, navigate to /profile when log in successful
+   * @returns {void}
+   */
   const handleLogin = async () => {
     const err = validate(email, password);
     if (err) {
       showErrorToast(err);
       return;
-    }
-
-    try {
-      setLoading(true);
-      await logIn(email, password);
-      navigate("/profile");
-    } catch (error) {
-      setLoading(false);
-      showErrorToast(error.message);
-      return;
-    } finally {
-      setLoading(false);
+    } else {
+      try {
+        setLoading(true);
+        await logIn(email, password);
+        showSuccessToast("Login Success");
+        navigate("/profile");
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        showErrorToast(error.message);
+        return;
+      }
     }
   };
 
+  /**
+   * Handle sign, open Login form when sign up successfully
+   * @returns {void}
+   */
   const handleSignUp = async () => {
     let err = validate(email, password);
-    err += confirmPasswordValidator(confirmPassword, password);
+    const confirmPasswordVal = confirmPasswordValidator(
+      confirmPassword,
+      password
+    );
+
+    if (confirmPasswordVal) {
+      err += " - " + confirmPasswordVal;
+    }
+
     if (err) {
       showErrorToast(err);
       return;
+    } else {
+      try {
+        setLoading(true);
+        await signUp(email, password);
+        setLoading(false);
+        showSuccessToast("Sign up Success");
+      } catch (error) {
+        setLoading(false);
+        showErrorToast(error.message);
+        return;
+      }
     }
-
-    try {
-      setLoading(true);
-      await signUp(email, password);
-    } catch (error) {
-      setLoading(false);
-      showErrorToast(error.message);
-      return;
-    }
-    setLoading(false);
-    setType("login");
-    setPassword("");
-    showSuccessToast("Sign up Success");
   };
 
-  const showSuccessToast = (message) => {
-    toast.success(message || "successful", {
-      data: {
-        title: "Success toast",
-        text: "This is a success message",
-      },
-    });
-  };
-
-  const showErrorToast = (message) => {
-    toast.error(message || "Error", {
-      data: {
-        title: "Error toast",
-        text: "This is an error message",
-      },
-    });
-  };
   return (
     <div className={styles["container"]}>
-      {loading && <Loading />}
       <div className={styles["form"]}>
         <FormWrapper>
           <FormInput
@@ -125,6 +129,7 @@ const Login = () => {
             display="block"
             onChange={(e) => setEmail(e.target.value)}
           />
+
           <FormInput
             type="password"
             name="password"
@@ -133,6 +138,7 @@ const Login = () => {
             display="block"
             onChange={(e) => setPassword(e.target.value)}
           />
+
           {type === "signup" ? (
             <FormInput
               type="password"
@@ -143,6 +149,7 @@ const Login = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           ) : null}
+
           <HorizontalLine width={75} />
 
           {type === "login" ? (
@@ -152,10 +159,10 @@ const Login = () => {
                 variant="primary"
                 size="medium"
                 onClick={handleLogin}
-                isLoading={loading}
               >
                 Log in
               </Button>
+
               <p className={styles["no-account"]}>
                 Not a member?{" "}
                 <Button
@@ -165,8 +172,8 @@ const Login = () => {
                     setType("signup");
                     setEmail("");
                     setPassword("");
+                    setConfirmPassword("");
                   }}
-                  isLoading={loading}
                 >
                   Sign up
                 </Button>
@@ -179,10 +186,10 @@ const Login = () => {
                 variant="success"
                 size="medium"
                 onClick={handleSignUp}
-                isLoading={loading}
               >
                 Sign up
               </Button>
+
               <p className={styles["no-account"]}>
                 Already have an account?{" "}
                 <Button
@@ -192,7 +199,6 @@ const Login = () => {
                     setEmail("");
                     setPassword("");
                   }}
-                  isLoading={loading}
                 >
                   Log in
                 </Button>
@@ -200,7 +206,6 @@ const Login = () => {
             </div>
           )}
         </FormWrapper>
-        <ToastContainer />
       </div>
     </div>
   );

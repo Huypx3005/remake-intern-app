@@ -6,6 +6,8 @@ import styles from "./ProfilePicture.module.css";
 
 import { storage } from "../../firebase/firebase";
 
+import { showErrorToast, showSuccessToast } from "../../utils/showToasts";
+
 const ProfilePicture = () => {
   const { user } = useAuth();
   const [imageUrl, setImageUrl] = useState(null);
@@ -42,12 +44,18 @@ const ProfilePicture = () => {
     const file = e.target.files[0];
     if (file) {
       // Upload the new profile picture to Firebase Storage
-      const imageRef = ref(storage, `profilePictures/${user.uid}`);
-      uploadBytes(imageRef, file).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((url) => {
-          setImageUrl(url);
+      try {
+        const imageRef = ref(storage, `profilePictures/${user.uid}`);
+        uploadBytes(imageRef, file).then((snapshot) => {
+          getDownloadURL(snapshot.ref).then((url) => {
+            setImageUrl(url);
+            showSuccessToast("Upload Success");
+          });
         });
-      });
+      } catch (err) {
+        showErrorToast(err.message);
+        return;
+      }
     }
   };
 

@@ -4,7 +4,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  updateProfile,
 } from "firebase/auth";
 
 import { auth } from "../firebase/firebase";
@@ -43,20 +42,13 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const updateUserProfile = async (description, photoUrl) => {
-    await updateProfile(auth.currentUser, {
-      displayName: description,
-      photoURL: "https://example.com/jane-q-user/profile.jpg",
-    });
-  };
-
   const value = {
     user,
     loading,
+    setLoading,
     signUp,
     logIn,
     logOut,
-    updateUserProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
