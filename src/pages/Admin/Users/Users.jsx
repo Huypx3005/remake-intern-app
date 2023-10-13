@@ -28,17 +28,18 @@ const Users = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   //------  for filter ----------
-  const [selectedOption, setSelectedOption] = useState("name"); // name is default value of select
-  const [filterValue, setFilterValue] = useState("");
-  const [ageFrom, setAgeFrom] = useState("");
-  const [ageTo, setAgeTo] = useState("");
+  const [selectedGender, setSelectedGender] = useState("male"); // name is default value of select
+  const [inputName, setInputName] = useState("");
+  const [inputAgeFrom, setInputAgeFrom] = useState("");
+  const [inputAgeTo, setInputAgeTo] = useState("");
 
   const tableHeaders = ["User ID", "Name", "Age", "Gender", "Action"];
 
   const options = [
-    { label: "Name", value: "name" },
-    { label: "Gender", value: "gender" },
-    { label: "Age", value: "age" },
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" },
+    { label: "Optional", value: "optional" },
+    { label: "none", value: "none" },
   ];
 
   // ----- END filter -----------
@@ -63,55 +64,53 @@ const Users = () => {
   }, []);
 
   const handleSelectChange = (e) => {
-    setSelectedOption(e.target.value);
+    setSelectedGender(e.target.value);
   };
 
   const handleClickFilter = () => {
     setIsLoading(true);
-    let filteredData = [];
-    switch (selectedOption) {
-      case "name":
-        filteredData = data.filter((item) =>
-          item.name.toLowerCase().includes(filterValue.toLowerCase())
-        );
-        setTableData(filteredData);
-        break;
-      case "gender":
-        filteredData = data.filter((item) =>
-          item.gender.toLowerCase().includes(filterValue.toLowerCase())
-        );
-        setTableData(filteredData);
-        break;
-      case "age":
-        if (ageFrom && !ageTo) {
-          filteredData = data.filter(
-            (item) => Number(item.age) >= Number(ageFrom)
-          );
-          setTableData(filteredData);
-        } else if (ageTo && !ageFrom) {
-          filteredData = data.filter(
-            (item) => Number(item.age) <= Number(ageTo)
-          );
-          setTableData(filteredData);
-        } else {
-          filteredData = data.filter(
-            (item) =>
-              Number(item.age) >= Number(ageFrom) &&
-              Number(item.age) <= Number(ageTo)
-          );
-          setTableData(filteredData);
-        }
-        break;
-      default:
-        break;
+
+    // Create a copy of the original data
+    let filteredData = [...data];
+
+    // Filter by name
+    if (inputName) {
+      filteredData = filteredData.filter((item) =>
+        item.name.toLowerCase().includes(inputName.toLowerCase())
+      );
     }
+
+    // Filter by gender
+    if (selectedGender !== "none") {
+      filteredData = filteredData.filter(
+        (item) => item.gender.toLowerCase() === selectedGender.toLowerCase()
+      );
+    }
+
+    // Filter by age
+    if (inputAgeFrom) {
+      filteredData = filteredData.filter(
+        (item) => Number(item.age) >= Number(inputAgeFrom)
+      );
+    }
+
+    if (inputAgeTo) {
+      filteredData = filteredData.filter(
+        (item) => Number(item.age) <= Number(inputAgeTo)
+      );
+    }
+
+    // Apply other filters as needed
+
+    // Update the table data
+    setTableData(filteredData);
     setIsLoading(false);
   };
 
   const clearFilter = () => {
-    setFilterValue("");
-    setAgeFrom("");
-    setAgeTo("");
+    setInputName("");
+    setInputAgeFrom("");
+    setInputAgeTo("");
     setTableData(data);
   };
 
@@ -161,37 +160,38 @@ const Users = () => {
             Add user+
           </Button>
           <span className={styles["filter"]}>
-            <span className={styles["filter-p"]}>Filter by:</span>
+            <span className={styles["filter-p"]}>Filter:</span>
+
+            <FormInput
+              placeholder="name"
+              size="small"
+              type="text"
+              value={inputName}
+              onChange={(e) => setInputName(e.target.value)}
+            />
             <Select
               options={options}
-              value={selectedOption}
+              value={selectedGender}
               onChange={handleSelectChange}
             />
-            {selectedOption === "age" ? (
-              <span className={styles["age-input"]}>
-                <FormInput
-                  type="number"
-                  size="small"
-                  value={ageFrom}
-                  placeholder="from"
-                  onChange={(e) => setAgeFrom(e.target.value)}
-                />
-                <FormInput
-                  size="small"
-                  type="number"
-                  value={ageTo}
-                  placeholder="to"
-                  onChange={(e) => setAgeTo(e.target.value)}
-                />
-              </span>
-            ) : (
+
+            <span className={styles["age-input"]}>
               <FormInput
-                size="medium"
-                type="text"
-                value={filterValue}
-                onChange={(e) => setFilterValue(e.target.value)}
+                type="number"
+                size="small"
+                value={inputAgeFrom}
+                placeholder="age from"
+                onChange={(e) => setInputAgeFrom(e.target.value)}
               />
-            )}
+              <FormInput
+                size="small"
+                type="number"
+                value={inputAgeTo}
+                placeholder=" age to"
+                onChange={(e) => setInputAgeTo(e.target.value)}
+              />
+            </span>
+
             <span className={styles["filter-button"]}>
               <Button
                 size="very-small"
