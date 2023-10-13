@@ -23,10 +23,22 @@ function App() {
       ) : (
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route element={<ProtectedRoutes />}>
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/admin" element={<Admin />} />
-          </Route>
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoutes>
+                <Profile />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoutes>
+                <Admin />
+              </ProtectedRoutes>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       )}
