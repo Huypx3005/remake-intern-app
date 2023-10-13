@@ -1,9 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-import { fetchUser } from "../utils/fetchUser";
+import { useAuth } from "../contexts/authContext";
 
 const ProtectedRoutes = ({ children }) => {
-  const user = fetchUser();
+  const { user } = useAuth();
 
   return user ? <Outlet /> : <Navigate to="/login" />;
 };

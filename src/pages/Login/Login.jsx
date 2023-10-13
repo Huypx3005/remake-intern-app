@@ -14,7 +14,6 @@ import Loading from "../../components/Loading/Loading";
 
 import { useAuth } from "../../contexts/authContext";
 
-import { fetchUser } from "../../utils/fetchUser";
 import {
   emailValidator,
   passwordValidator,
@@ -24,7 +23,7 @@ import {
 const Login = () => {
   const navigate = useNavigate();
 
-  const { logIn, signUp } = useAuth();
+  const { logIn, signUp, user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState("login"); // type of form: login | sign up
   const [email, setEmail] = useState("");
@@ -32,7 +31,6 @@ const Login = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
-    const user = fetchUser();
     if (user) {
       navigate("/profile");
     }

@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
-      localStorage.setItem("user", JSON.stringify(user));
     });
 
     // Cleanup function
@@ -37,12 +36,10 @@ export const AuthProvider = ({ children }) => {
       password
     );
     setUser(userCredential.user);
-    localStorage.setItem("user", JSON.stringify(userCredential.user));
   };
 
   const logOut = async () => {
     await signOut(auth);
-    localStorage.clear();
     setUser(null);
   };
 
@@ -51,8 +48,6 @@ export const AuthProvider = ({ children }) => {
       displayName: description,
       photoURL: "https://example.com/jane-q-user/profile.jpg",
     });
-
-    // localStorage.setItem("user", JSON.stringify(auth.currentUser));
   };
 
   const value = {

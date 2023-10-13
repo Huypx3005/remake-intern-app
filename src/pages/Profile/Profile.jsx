@@ -11,8 +11,6 @@ import Button from "../../components/Button/Button";
 
 import ProfilePicture from "./ProfilePicture";
 
-import { fetchUser } from "../../utils/fetchUser";
-
 import {
   checkDescIsExist,
   getDescription,
@@ -21,16 +19,12 @@ import {
 } from "../../firebase/firestore/description";
 
 const Profile = () => {
-  const [user, setUser] = useState({});
-
   const [isLoading, setIsLoading] = useState(false);
-  const { logOut } = useAuth();
+  const { logOut, user } = useAuth();
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = fetchUser();
-    setUser(user);
     (async () => {
       try {
         if (await checkDescIsExist(user.uid)) {
