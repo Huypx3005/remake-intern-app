@@ -13,17 +13,39 @@ import ProfilePicture from "./ProfilePicture";
 
 import { fetchUser } from "../../utils/fetchUser";
 
+import {
+  checkDescIsExist,
+  getDescription,
+  updateDescription,
+  addDescription,
+} from "../../firebase/firestore/description";
+
 const Profile = () => {
-  let user = {};
+  const [user, setUser] = useState({});
 
   const [isLoading, setIsLoading] = useState(false);
-  const { logOut, updateUserProfile } = useAuth();
+  const { logOut } = useAuth();
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    user = fetchUser();
-    setDescription(user?.displayName);
+    const user = fetchUser();
+    setUser(user);
+    (async () => {
+      try {
+        if (await checkDescIsExist(user.uid)) {
+          setIsLoading(true);
+          const description = await getDescription(user.uid);
+          setDescription(description.content);
+        } else {
+          await addDescription(user.uid);
+        }
+      } catch (error) {
+        setIsLoading(false);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
   }, []);
 
   const handleSignOut = async () => {
@@ -47,13 +69,14 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
+      console.log("from ui: ", user.uid);
       setIsLoading(true);
-      await updateUserProfile(description);
+      await updateDescription(user.uid, description);
       // Handle successful sign-out, e.g., redirect or update UI
     } catch (error) {
       setIsLoading(false);
       // Handle sign-out error, e.g., display an error message
-      console.error("Sign-out error:", error.message);
+      console.error("Save error:", error.message);
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +86,7 @@ const Profile = () => {
     <div className={styles["profile-container"]}>
       {isLoading && <Loading />}
       <div className={styles["profile-header"]}>
-        <h2>Welcome, {user?.email}!</h2>
+        <h2>Welcome, {user && user.email}!</h2>
         <Button onClick={handleSignOut} size="small">
           Sign Out
         </Button>

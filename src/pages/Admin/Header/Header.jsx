@@ -15,7 +15,7 @@ const Header = () => {
   return (
     <header className={styles["header"]}>
       <div className={styles["greet"]}>
-        <p className={styles["name"]}>Hello, {user && user?.email}</p>
+        <p className={styles["name"]}>Hello, {user && user.email}</p>
         <p className={styles["greet-nice"]}>Have a nice day</p>
       </div>
       <div className={styles["extensions"]}>

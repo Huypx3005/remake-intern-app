@@ -13,10 +13,12 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
+      setLoading(false);
       localStorage.setItem("user", JSON.stringify(user));
     });
 
@@ -50,11 +52,12 @@ export const AuthProvider = ({ children }) => {
       photoURL: "https://example.com/jane-q-user/profile.jpg",
     });
 
-    localStorage.setItem("user", JSON.stringify(auth.currentUser));
+    // localStorage.setItem("user", JSON.stringify(auth.currentUser));
   };
 
   const value = {
     user,
+    loading,
     signUp,
     logIn,
     logOut,

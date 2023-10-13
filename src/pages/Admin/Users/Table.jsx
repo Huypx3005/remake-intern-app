@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import styles from "./Table.module.css";
 
 const Table = ({ headers, data, handleClickUpdate, handleClickDelete }) => {
-  const [visibleData, setVisibleData] = useState(data.slice(0, 10));
+  const [visibleData, setVisibleData] = useState([]);
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -12,10 +12,15 @@ const Table = ({ headers, data, handleClickUpdate, handleClickDelete }) => {
   }, [data]);
 
   const handleScroll = useCallback(() => {
+    console.log(containerRef.current.scrollTop);
+    console.log(containerRef.current.clientHeight);
+    console.log(containerRef.current.scrollHeight);
     if (
       containerRef.current.scrollTop + containerRef.current.clientHeight >=
-      containerRef.current.scrollHeight
+        containerRef.current.scrollHeight &&
+      visibleData.length != data.length // Stop update when render all data
     ) {
+      console.log("updating ...");
       const currentLength = visibleData.length;
       const newData = data.slice(currentLength, currentLength + 10);
       setVisibleData((prevData) => [...prevData, ...newData]);

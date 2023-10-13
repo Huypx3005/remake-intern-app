@@ -93,7 +93,7 @@ const Login = () => {
     setLoading(false);
     setType("login");
     setPassword("");
-    showSuccessToast("Login Success");
+    showSuccessToast("Sign up Success");
   };
 
   const showSuccessToast = (message) => {
