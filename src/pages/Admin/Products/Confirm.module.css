@@ -1,0 +1,11 @@
+.confirm {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.selections {
+  display: flex;
+  justify-content: space-between;
+}

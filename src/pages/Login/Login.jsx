@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import "react-toastify/dist/ReactToastify.css";
 
 import styles from "./Login.module.css";
 
+import Loading from "../../components/Loading/Loading";
 import Button from "../../components/Button/Button";
 import FormInput from "../../components/FormInput/FormInput";
 import FormWrapper from "../../components/FormWrapper/FormWrapper";
 import HorizontalLine from "../../components/HorizontalLine/HorizontalLine";
 
-import { useAuth } from "../../contexts/authContext";
+// import { useAuth } from "../../contexts/authContext";
+import { logIn, signUp } from "../../features/auth/authSlice";
 
 import {
   emailValidator,
@@ -20,9 +23,11 @@ import {
 import { showSuccessToast, showErrorToast } from "../../utils/showToasts.js";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
-  const { logIn, signUp, user, setLoading } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const [type, setType] = useState("login"); // type of form: login | sign up
 
@@ -72,7 +77,7 @@ const Login = () => {
     } else {
       try {
         setLoading(true);
-        await logIn(email, password);
+        await dispatch(logIn({ email, password })).unwrap();
         showSuccessToast("Login Success");
         navigate("/profile");
         setLoading(false);
@@ -105,9 +110,10 @@ const Login = () => {
     } else {
       try {
         setLoading(true);
-        await signUp(email, password);
+        await dispatch(signUp({ email, password })).unwrap();
         setLoading(false);
         showSuccessToast("Sign up Success");
+        navigate("/profile");
       } catch (error) {
         setLoading(false);
         showErrorToast(error.message);
@@ -117,97 +123,103 @@ const Login = () => {
   };
 
   return (
-    <div className={styles["container"]}>
-      <div className={styles["form"]}>
-        <FormWrapper>
-          <FormInput
-            type="email"
-            name="name"
-            value={email}
-            placeholder="example@email.com"
-            autoComplete="on"
-            display="block"
-            onChange={(e) => setEmail(e.target.value)}
-          />
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className={styles["container"]}>
+          <div className={styles["form"]}>
+            <FormWrapper>
+              <FormInput
+                type="email"
+                name="name"
+                value={email}
+                placeholder="example@email.com"
+                autoComplete="on"
+                display="block"
+                onChange={(e) => setEmail(e.target.value)}
+              />
 
-          <FormInput
-            type="password"
-            name="password"
-            value={password}
-            placeholder="password"
-            display="block"
-            onChange={(e) => setPassword(e.target.value)}
-          />
+              <FormInput
+                type="password"
+                name="password"
+                value={password}
+                placeholder="password"
+                display="block"
+                onChange={(e) => setPassword(e.target.value)}
+              />
 
-          {type === "signup" ? (
-            <FormInput
-              type="password"
-              name="password"
-              value={confirmPassword}
-              placeholder="confirm password"
-              display="block"
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-          ) : null}
+              {type === "signup" ? (
+                <FormInput
+                  type="password"
+                  name="password"
+                  value={confirmPassword}
+                  placeholder="confirm password"
+                  display="block"
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              ) : null}
 
-          <HorizontalLine width={75} />
+              <HorizontalLine width={75} />
 
-          {type === "login" ? (
-            <div>
-              <Button
-                type="submit"
-                variant="primary"
-                size="medium"
-                onClick={handleLogin}
-              >
-                Log in
-              </Button>
+              {type === "login" ? (
+                <div>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="medium"
+                    onClick={handleLogin}
+                  >
+                    Log in
+                  </Button>
 
-              <p className={styles["no-account"]}>
-                Not a member?{" "}
-                <Button
-                  variant="success"
-                  size="very-small"
-                  onClick={() => {
-                    setType("signup");
-                    setEmail("");
-                    setPassword("");
-                    setConfirmPassword("");
-                  }}
-                >
-                  Sign up
-                </Button>
-              </p>
-            </div>
-          ) : (
-            <div>
-              <Button
-                type="submit"
-                variant="success"
-                size="medium"
-                onClick={handleSignUp}
-              >
-                Sign up
-              </Button>
+                  <p className={styles["no-account"]}>
+                    Not a member?{" "}
+                    <Button
+                      variant="success"
+                      size="very-small"
+                      onClick={() => {
+                        setType("signup");
+                        setEmail("");
+                        setPassword("");
+                        setConfirmPassword("");
+                      }}
+                    >
+                      Sign up
+                    </Button>
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <Button
+                    type="submit"
+                    variant="success"
+                    size="medium"
+                    onClick={handleSignUp}
+                  >
+                    Sign up
+                  </Button>
 
-              <p className={styles["no-account"]}>
-                Already have an account?{" "}
-                <Button
-                  size="very-small"
-                  onClick={() => {
-                    setType("login");
-                    setEmail("");
-                    setPassword("");
-                  }}
-                >
-                  Log in
-                </Button>
-              </p>
-            </div>
-          )}
-        </FormWrapper>
-      </div>
-    </div>
+                  <p className={styles["no-account"]}>
+                    Already have an account?{" "}
+                    <Button
+                      size="very-small"
+                      onClick={() => {
+                        setType("login");
+                        setEmail("");
+                        setPassword("");
+                      }}
+                    >
+                      Log in
+                    </Button>
+                  </p>
+                </div>
+              )}
+            </FormWrapper>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

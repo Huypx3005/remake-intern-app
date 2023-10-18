@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./Profile.module.css";
 
@@ -9,7 +11,9 @@ import Button from "../../components/Button/Button";
 
 import ProfilePicture from "./ProfilePicture";
 
-import { useAuth } from "../../contexts/authContext";
+// import { useAuth } from "../../contexts/authContext";
+import { logOut } from "../../features/auth/authSlice";
+
 import {
   checkDescIsExist,
   getDescription,
@@ -20,8 +24,11 @@ import {
 import { showSuccessToast } from "../../utils/showToasts";
 
 const Profile = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
-  const { logOut, user } = useAuth();
+  // const { logOut, user } = useAuth();
+
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
 
@@ -46,7 +53,7 @@ const Profile = () => {
   const handleSignOut = async () => {
     try {
       setLoading(true);
-      await logOut();
+      await dispatch(logOut()).unwrap();
       showSuccessToast("Sign out successfully");
       // Handle successful sign-out, e.g., redirect or update UI
       navigate("/login");
@@ -83,6 +90,9 @@ const Profile = () => {
       {loading && <Loading />}
       <div className={styles["profile-header"]}>
         <h2>Welcome, {user && user.email}!</h2>
+        <Link to="/admin">
+          <Button size="small">Admin</Button>
+        </Link>
         <Button onClick={handleSignOut} size="small">
           Sign Out
         </Button>

@@ -1,0 +1,39 @@
+.users-dashboard {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-name {
+  font-size: 3rem;
+  color: #4a85f6;
+}
+
+.dashboard-functions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 50px;
+}
+
+.filter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.filter-p {
+  margin-right: 20px;
+}
+
+.age-input {
+  display: flex;
+}
+
+.filter-button {
+  display: flex;
+  gap: 10px;
+}
+
+.users-table {
+  margin: 40px auto;
+}

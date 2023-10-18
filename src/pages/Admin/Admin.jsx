@@ -1,10 +1,10 @@
+import { Outlet } from "react-router-dom";
+
 import styles from "./Admin.module.css";
 
 import Sidebar from "./Sidebar/Sidebar";
 import Header from "./Header/Header";
 import Users from "./Users/Users";
-
-import Loading from "../../components/Loading/Loading";
 
 const Admin = () => {
   return (
@@ -18,7 +18,7 @@ const Admin = () => {
             <Header />
           </div>
           <div className={styles["section"]}>
-            <Users />
+            <Outlet />
           </div>
         </div>
       </div>
