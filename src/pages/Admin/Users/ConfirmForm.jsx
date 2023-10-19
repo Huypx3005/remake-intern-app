@@ -3,6 +3,7 @@ import styles from "./Confirm.module.css";
 import Button from "../../../components/Button/Button";
 
 import { getUsers, deleteUser } from "../../../firebase/firestore/users";
+import { showSuccessToast, showErrorToast } from "../../../utils/showToasts";
 
 const ConfirmForm = ({
   action = "delete",
@@ -12,8 +13,6 @@ const ConfirmForm = ({
   setTableData,
   isLoading,
   setIsLoading,
-  showSuccessToast,
-  showErrorToast,
 }) => {
   const handleDeleteUser = async () => {
     let users;
@@ -22,17 +21,17 @@ const ConfirmForm = ({
       setIsLoading(true);
       deleteUser(selectedUserId);
       users = await getUsers();
+      setData(users);
+      setTableData(users);
+      setIsLoading(false);
+      showSuccessToast("Delete user successfully");
+      setIsModalOpen(false);
     } catch (error) {
       setIsLoading(false);
       setIsModalOpen(false);
       showErrorToast(error.message);
       return;
     }
-    setData(users);
-    setTableData(users);
-    setIsLoading(false);
-    showSuccessToast("Delete user successfully");
-    setIsModalOpen(false);
   };
 
   return (

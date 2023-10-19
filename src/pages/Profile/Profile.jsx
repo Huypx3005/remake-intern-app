@@ -19,7 +19,7 @@ import {
   addDescription,
 } from "../../firebase/firestore/description";
 
-import { showSuccessToast } from "../../utils/showToasts";
+import { showSuccessToast, showErrorToast } from "../../utils/showToasts";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -58,7 +58,7 @@ const Profile = () => {
     } catch (error) {
       setLoading(false);
       // Handle sign-out error, e.g., display an error message
-      console.log("Sign-out error:", error.message);
+      showErrorToast(error.message);
     } finally {
       setLoading(false);
     }
@@ -77,7 +77,7 @@ const Profile = () => {
     } catch (error) {
       setLoading(false);
       // Handle sign-out error, e.g., display an error message
-      console.log("Save error:", error.message);
+      showErrorToast(error.message)
     } finally {
       setLoading(false);
     }

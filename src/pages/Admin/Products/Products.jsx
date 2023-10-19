@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
 import styles from "./Products.module.css";
 
 import Button from "../../../components/Button/Button";
@@ -14,9 +11,9 @@ import ConfirmForm from "./ConfirmForm";
 import Table from "./Table";
 
 import { getProducts } from "../../../firebase/firestore/products";
+import { showErrorToast } from "../../../utils/showToasts";
 
 const Products = () => {
-  const [data, setData] = useState([]); // data get from api
   const [tableData, setTableData] = useState([]);
   const [formType, setFormType] = useState("");
   const [isModalOpen, setIsModalOpen] = useState();
@@ -42,7 +39,6 @@ const Products = () => {
       try {
         setIsLoading(true);
         products = await getProducts();
-        setData(products);
         setTableData(products);
         setIsLoading(false);
       } catch (e) {
@@ -73,14 +69,6 @@ const Products = () => {
     setIsModalOpen(true);
   };
 
-  const showSuccessToast = (message) => {
-    toast.success(message || "successful");
-  };
-
-  const showErrorToast = (message) => {
-    toast.error(message || "Error");
-  };
-
   return (
     <>
       {isLoading && <Loading />}
@@ -102,31 +90,24 @@ const Products = () => {
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
           {formType === "add" || formType === "update" ? (
             <ProductForm
-              setData={setData}
               setTableData={setTableData}
               type={formType}
               setIsModalOpen={setIsModalOpen}
               selectedProductId={selectedProductId}
               isLoading={isLoading}
               setIsLoading={setIsLoading}
-              showSuccessToast={showSuccessToast}
-              showErrorToast={showErrorToast}
             />
           ) : (
             <ConfirmForm
               action="delete"
               setIsModalOpen={setIsModalOpen}
               selectedProductId={selectedProductId}
-              setData={setData}
               setTableData={setTableData}
               isLoading={isLoading}
               setIsLoading={setIsLoading}
-              showSuccessToast={showSuccessToast}
-              showErrorToast={showErrorToast}
             />
           )}
         </Modal>
-        <ToastContainer />
       </div>
     </>
   );

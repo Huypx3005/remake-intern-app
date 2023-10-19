@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import "react-toastify/dist/ReactToastify.css";
-
 import styles from "./Login.module.css";
 
 import Loading from "../../components/Loading/Loading";
@@ -12,9 +10,7 @@ import FormInput from "../../components/FormInput/FormInput";
 import FormWrapper from "../../components/FormWrapper/FormWrapper";
 import HorizontalLine from "../../components/HorizontalLine/HorizontalLine";
 
-// import { useAuth } from "../../contexts/authContext";
 import { logIn, signUp } from "../../features/auth/authSlice";
-
 import {
   emailValidator,
   passwordValidator,

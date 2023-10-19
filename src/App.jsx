@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 
+import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 import Login from "./pages/Login/Login";

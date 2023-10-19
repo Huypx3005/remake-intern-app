@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import styles from "./Users.module.css";
@@ -16,6 +15,7 @@ import ConfirmForm from "./ConfirmForm";
 import Table from "./Table";
 
 import { getUsers } from "../../../firebase/firestore/users";
+import { showErrorToast } from "../../../utils/showToasts";
 
 const Users = () => {
   const [data, setData] = useState([]); // data get from api
@@ -132,24 +132,6 @@ const Users = () => {
     setIsModalOpen(true);
   };
 
-  const showSuccessToast = (message) => {
-    toast.success(message || "successful", {
-      data: {
-        title: "Success toast",
-        text: "This is a success message",
-      },
-    });
-  };
-
-  const showErrorToast = (message) => {
-    toast.error(message || "Error", {
-      data: {
-        title: "Error toast",
-        text: "This is an error message",
-      },
-    });
-  };
-
   return (
     <>
       {isLoading && <Loading />}
@@ -228,8 +210,6 @@ const Users = () => {
               selectedUserId={selectedUserId}
               isLoading={isLoading}
               setIsLoading={setIsLoading}
-              showSuccessToast={showSuccessToast}
-              showErrorToast={showErrorToast}
             />
           ) : (
             <ConfirmForm
@@ -240,12 +220,9 @@ const Users = () => {
               setTableData={setTableData}
               isLoading={isLoading}
               setIsLoading={setIsLoading}
-              showSuccessToast={showSuccessToast}
-              showErrorToast={showErrorToast}
             />
           )}
         </Modal>
-        <ToastContainer />
       </div>
     </>
   );

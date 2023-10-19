@@ -31,10 +31,10 @@ const ProfilePicture = () => {
                 setImageUrl(url);
               })
               .catch((e) => {
-                console.log(e.message);
+                showErrorToast(e.message);
               });
           } else {
-            console.error("Error fetching profile picture:", error.message);
+            showErrorToast(error.message);
           }
         });
     }

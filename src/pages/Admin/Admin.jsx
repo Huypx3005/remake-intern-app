@@ -4,7 +4,6 @@ import styles from "./Admin.module.css";
 
 import Sidebar from "./Sidebar/Sidebar";
 import Header from "./Header/Header";
-import Users from "./Users/Users";
 
 const Admin = () => {
   return (
@@ -22,7 +21,6 @@ const Admin = () => {
           </div>
         </div>
       </div>
-      {/* <Loading /> */}
     </main>
   );
 };

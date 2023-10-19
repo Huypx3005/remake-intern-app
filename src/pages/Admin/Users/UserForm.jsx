@@ -4,6 +4,7 @@ import FormWrapper from "../../../components/FormWrapper/FormWrapper";
 import FormInput from "../../../components/FormInput/FormInput";
 import Button from "../../../components/Button/Button";
 import HorizontalLine from "../../../components/HorizontalLine/HorizontalLine";
+import Select from "../../../components/Select/Select";
 
 import {
   getUsers,
@@ -11,9 +12,9 @@ import {
   getUser,
   updateUser,
 } from "../../../firebase/firestore/users";
-import Select from "../../../components/Select/Select";
 
 import { userFormValidator } from "../../../utils/validators";
+import { showSuccessToast, showErrorToast } from "../../../utils/showToasts";
 
 const UserForm = ({
   setIsModalOpen,
@@ -22,8 +23,6 @@ const UserForm = ({
   setTableData,
   isLoading,
   setIsLoading,
-  showSuccessToast,
-  showErrorToast,
 }) => {
   const [formState, setFormState] = useState({
     name: "",
@@ -83,29 +82,29 @@ const UserForm = ({
         setIsLoading(true);
         updateUser(selectedUserId, name, age, selectedOption);
         users = await getUsers();
+        setData(users);
+        setTableData(users);
+        setIsLoading(false);
+        showSuccessToast("Update user successfully");
       } catch (error) {
         setIsLoading(false);
         showErrorToast(error.message);
         return;
       }
-      setData(users);
-      setTableData(users);
-      setIsLoading(false);
-      showSuccessToast("Update user successfully");
     } else {
       try {
         setIsLoading(true);
         await addUser(name, age, selectedOption);
         users = await getUsers();
+        setData(users);
+        setTableData(users);
+        setIsLoading(false);
+        showSuccessToast("Add user successfully");
       } catch (error) {
         setIsLoading(false);
         showErrorToast(error.message);
         return;
       }
-      setData(users);
-      setTableData(users);
-      setIsLoading(false);
-      showSuccessToast("Add user successfully");
     }
 
     // close modal

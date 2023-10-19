@@ -17,15 +17,14 @@ import {
   updateProduct,
 } from "../../../firebase/firestore/products";
 
+import { showSuccessToast, showErrorToast } from "../../../utils/showToasts";
+
 const ProductForm = ({
   setIsModalOpen,
   selectedProductId,
-  setData,
   setTableData,
   isLoading,
   setIsLoading,
-  showSuccessToast,
-  showErrorToast,
 }) => {
   // gender select
   const options = [
@@ -58,29 +57,27 @@ const ProductForm = ({
           category
         );
         products = await getProducts();
+        setTableData(products);
+        setIsLoading(false);
+        showSuccessToast("Update product successfully");
       } catch (error) {
         setIsLoading(false);
         showErrorToast(error.message);
         return;
       }
-      setData(products);
-      setTableData(products);
-      setIsLoading(false);
-      showSuccessToast("Update product successfully");
     } else {
       try {
         setIsLoading(true);
         await addProduct(name, brand, description, price, category);
         products = await getProducts();
+        setTableData(products);
+        setIsLoading(false);
+        showSuccessToast("Add product successfully");
       } catch (error) {
         setIsLoading(false);
         showErrorToast(error.message);
         return;
       }
-      setData(products);
-      setTableData(products);
-      setIsLoading(false);
-      showSuccessToast("Add product successfully");
     }
 
     // close modal
