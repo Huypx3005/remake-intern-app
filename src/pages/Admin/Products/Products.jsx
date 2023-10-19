@@ -5,53 +5,45 @@ import "react-toastify/dist/ReactToastify.css";
 
 import styles from "./Products.module.css";
 
-import FormInput from "../../../components/FormInput/FormInput";
 import Button from "../../../components/Button/Button";
-import Select from "../../../components/Select/Select";
 import Modal from "../../../components/Modal/Modal";
 import Loading from "../../../components/Loading/Loading";
 
-import UserForm from "./UserForm";
+import ProductForm from "./ProductForm";
 import ConfirmForm from "./ConfirmForm";
 import Table from "./Table";
 
-import { getUsers } from "../../../firebase/firestore/users";
+import { getProducts } from "../../../firebase/firestore/products";
 
 const Products = () => {
   const [data, setData] = useState([]); // data get from api
   const [tableData, setTableData] = useState([]);
   const [formType, setFormType] = useState("");
   const [isModalOpen, setIsModalOpen] = useState();
-  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedProductId, setSelectedProductId] = useState(null);
 
   // loading
   const [isLoading, setIsLoading] = useState(false);
 
-  //------  for filter ----------
-  const [selectedGender, setSelectedGender] = useState("male"); // name is default value of select
-  const [inputName, setInputName] = useState("");
-  const [inputAgeFrom, setInputAgeFrom] = useState("");
-  const [inputAgeTo, setInputAgeTo] = useState("");
-
-  const tableHeaders = ["User ID", "Name", "Age", "Gender", "Action"];
-
-  const options = [
-    { label: "Male", value: "male" },
-    { label: "Female", value: "female" },
-    { label: "Optional", value: "optional" },
-    { label: "none", value: "none" },
+  const tableHeaders = [
+    "product ID",
+    "Name",
+    "Brand",
+    "Description",
+    "Price",
+    "Category",
+    "Action",
   ];
-
   // ----- END filter -----------
 
   useEffect(() => {
     (async () => {
-      let users;
+      let products;
       try {
         setIsLoading(true);
-        users = await getUsers();
-        setData(users);
-        setTableData(users);
+        products = await getProducts();
+        setData(products);
+        setTableData(products);
         setIsLoading(false);
       } catch (e) {
         setIsLoading(false);
@@ -63,154 +55,43 @@ const Products = () => {
     })();
   }, []);
 
-  const handleSelectChange = (e) => {
-    setSelectedGender(e.target.value);
-  };
-
-  const handleClickFilter = () => {
-    setIsLoading(true);
-
-    // Create a copy of the original data
-    let filteredData = [...data];
-
-    // Filter by name
-    if (inputName) {
-      filteredData = filteredData.filter((item) =>
-        item.name.toLowerCase().includes(inputName.toLowerCase())
-      );
-    }
-
-    // Filter by gender
-    if (selectedGender !== "none") {
-      filteredData = filteredData.filter(
-        (item) => item.gender.toLowerCase() === selectedGender.toLowerCase()
-      );
-    }
-
-    // Filter by age
-    if (inputAgeFrom) {
-      filteredData = filteredData.filter(
-        (item) => Number(item.age) >= Number(inputAgeFrom)
-      );
-    }
-
-    if (inputAgeTo) {
-      filteredData = filteredData.filter(
-        (item) => Number(item.age) <= Number(inputAgeTo)
-      );
-    }
-
-    // Apply other filters as needed
-
-    // Update the table data
-    setTableData(filteredData);
-    setIsLoading(false);
-  };
-
-  const clearFilter = () => {
-    setInputName("");
-    setInputAgeFrom("");
-    setInputAgeTo("");
-    setTableData(data);
-  };
-
   const handleClickAdd = () => {
-    setSelectedUserId(null);
+    setSelectedProductId(null);
     setFormType("add");
     setIsModalOpen(true);
   };
 
   const handleClickUpdate = (id) => {
-    setSelectedUserId(id);
+    setSelectedProductId(id);
     setFormType("update");
     setIsModalOpen(true);
   };
 
   const handleClickDelete = (id) => {
-    setSelectedUserId(id);
+    setSelectedProductId(id);
     setFormType("delete");
     setIsModalOpen(true);
   };
 
   const showSuccessToast = (message) => {
-    toast.success(message || "successful", {
-      data: {
-        title: "Success toast",
-        text: "This is a success message",
-      },
-    });
+    toast.success(message || "successful");
   };
 
   const showErrorToast = (message) => {
-    toast.error(message || "Error", {
-      data: {
-        title: "Error toast",
-        text: "This is an error message",
-      },
-    });
+    toast.error(message || "Error");
   };
 
   return (
     <>
       {isLoading && <Loading />}
-      <div className={styles["users-dashboard"]}>
+      <div className={styles["products-dashboard"]}>
         <h2 className={styles["dashboard-name"]}>Products</h2>
         <div className={styles["dashboard-functions"]}>
           <Button size="small" onClick={handleClickAdd} isLoading={isLoading}>
-            Add user+
+            Add product+
           </Button>
-          {/* <span className={styles["filter"]}>
-            <span className={styles["filter-p"]}>Filter:</span>
-
-            <FormInput
-              placeholder="name"
-              size="small"
-              type="text"
-              value={inputName}
-              onChange={(e) => setInputName(e.target.value)}
-            />
-            <Select
-              options={options}
-              value={selectedGender}
-              onChange={handleSelectChange}
-            />
-
-            <span className={styles["age-input"]}>
-              <FormInput
-                type="number"
-                size="small"
-                value={inputAgeFrom}
-                placeholder="age from"
-                onChange={(e) => setInputAgeFrom(e.target.value)}
-              />
-              <FormInput
-                size="small"
-                type="number"
-                value={inputAgeTo}
-                placeholder=" age to"
-                onChange={(e) => setInputAgeTo(e.target.value)}
-              />
-            </span>
-
-            <span className={styles["filter-button"]}>
-              <Button
-                size="very-small"
-                onClick={handleClickFilter}
-                isLoading={isLoading}
-              >
-                Filter
-              </Button>
-              <Button
-                size="very-small"
-                onClick={clearFilter}
-                isLoading={isLoading}
-              >
-                Clear filter
-              </Button>
-            </span>
-          </span> */}
         </div>
-        <div className={styles["users-table"]}>
+        <div className={styles["products-table"]}>
           <Table
             headers={tableHeaders}
             data={tableData}
@@ -220,12 +101,12 @@ const Products = () => {
         </div>
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
           {formType === "add" || formType === "update" ? (
-            <UserForm
+            <ProductForm
               setData={setData}
               setTableData={setTableData}
               type={formType}
               setIsModalOpen={setIsModalOpen}
-              selectedUserId={selectedUserId}
+              selectedProductId={selectedProductId}
               isLoading={isLoading}
               setIsLoading={setIsLoading}
               showSuccessToast={showSuccessToast}
@@ -235,7 +116,7 @@ const Products = () => {
             <ConfirmForm
               action="delete"
               setIsModalOpen={setIsModalOpen}
-              selectedUserId={selectedUserId}
+              selectedProductId={selectedProductId}
               setData={setData}
               setTableData={setTableData}
               isLoading={isLoading}

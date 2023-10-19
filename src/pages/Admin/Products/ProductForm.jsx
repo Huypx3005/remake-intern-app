@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
 
+
+
 import FormWrapper from "../../../components/FormWrapper/FormWrapper";
 import FormInput from "../../../components/FormInput/FormInput";
 import Button from "../../../components/Button/Button";
 import HorizontalLine from "../../../components/HorizontalLine/HorizontalLine";
 
 import {
-  getUsers,
-  addUser,
-  getUser,
-  updateUser,
-} from "../../../firebase/firestore/users";
+  getProducts,
+  addProduct,
+  getProduct,
+  updateProduct,
+} from "../../../firebase/firestore/products";
 import Select from "../../../components/Select/Select";
 
-import { userFormValidator } from "../../../utils/validators";
-
-const UserForm = ({
+const ProductForm = ({
   setIsModalOpen,
-  selectedUserId,
+  selectedProductId,
   setData,
   setTableData,
   isLoading,
@@ -27,34 +27,37 @@ const UserForm = ({
 }) => {
   const [formState, setFormState] = useState({
     name: "",
-    age: "",
+    brand: "",
+    description: "",
+    price: "",
   });
 
   // gender select
   const options = [
-    { label: "Male", value: "male" },
-    { label: "Female", value: "female" },
-    { label: "Optional", value: "optional" },
+    { label: "Category 1", value: "cat 1" },
+    { label: "Category 2", value: "cat 2" },
+    { label: "Category 3", value: "cat 3" },
+    { label: "Category 4", value: "cat 4" },
   ];
-  const [selectedOption, setSelectedOption] = useState("male");
+  const [selectedOption, setSelectedOption] = useState("cat 1");
   const handleSelectChange = (e) => {
     setSelectedOption(e.target.value);
   };
 
   useEffect(() => {
-    if (selectedUserId) {
+    if (selectedProductId) {
       (async () => {
-        let user;
+        let product;
         try {
           setIsLoading(true);
-          user = await getUser(selectedUserId);
+          product = await getProduct(selectedProductId);
         } catch (error) {
           setIsLoading(false);
           showErrorToast(error.message);
           return;
         }
-        setSelectedOption(user?.gender);
-        setFormState(user);
+        setSelectedOption(product?.category);
+        setFormState(product);
         setIsLoading(false);
       })();
     }
@@ -69,43 +72,50 @@ const UserForm = ({
   };
 
   const handleSubmit = async () => {
-    const { name, age } = formState;
+    const { name, brand, description, price } = formState;
 
-    const err = userFormValidator(name, age);
+    const err = "";
     if (err) {
       showErrorToast(err);
       return;
     }
 
-    let users;
-    if (selectedUserId) {
+    let products;
+    if (selectedProductId) {
       try {
         setIsLoading(true);
-        updateUser(selectedUserId, name, age, selectedOption);
-        users = await getUsers();
+        updateProduct(
+          selectedProductId,
+          name,
+          brand,
+          description,
+          price,
+          selectedOption
+        );
+        products = await getProducts();
       } catch (error) {
         setIsLoading(false);
         showErrorToast(error.message);
         return;
       }
-      setData(users);
-      setTableData(users);
+      setData(products);
+      setTableData(products);
       setIsLoading(false);
-      showSuccessToast("Update user successfully");
+      showSuccessToast("Update product successfully");
     } else {
       try {
         setIsLoading(true);
-        await addUser(name, age, selectedOption);
-        users = await getUsers();
+        await addProduct(name, brand, description, price, selectedOption);
+        products = await getProducts();
       } catch (error) {
         setIsLoading(false);
         showErrorToast(error.message);
         return;
       }
-      setData(users);
-      setTableData(users);
+      setData(products);
+      setTableData(products);
       setIsLoading(false);
-      showSuccessToast("Add user successfully");
+      showSuccessToast("Add product successfully");
     }
 
     // close modal
@@ -125,10 +135,28 @@ const UserForm = ({
           onChange={handleInputChange}
         />
         <FormInput
+          type="text"
+          name="brand"
+          value={formState.brand}
+          placeholder="brand ..."
+          autoComplete="on"
+          display="block"
+          onChange={handleInputChange}
+        />
+        <FormInput
+          type="text"
+          name="description"
+          value={formState.description}
+          placeholder="description ..."
+          autoComplete="on"
+          display="block"
+          onChange={handleInputChange}
+        />
+        <FormInput
           type="number"
-          name="age"
-          value={formState.age}
-          placeholder="age ..."
+          name="price"
+          value={formState.price}
+          placeholder="price ..."
           display="block"
           onChange={handleInputChange}
         />
@@ -145,11 +173,11 @@ const UserForm = ({
           onClick={handleSubmit}
           isLoading={isLoading}
         >
-          {selectedUserId ? "Update" : "Add"}
+          {selectedProductId ? "Update" : "Add"}
         </Button>
       </FormWrapper>
     </div>
   );
 };
 
-export default UserForm;
+export default ProductForm;

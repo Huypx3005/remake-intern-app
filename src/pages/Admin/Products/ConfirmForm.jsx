@@ -2,12 +2,15 @@ import styles from "./Confirm.module.css";
 
 import Button from "../../../components/Button/Button";
 
-import { getUsers, deleteUser } from "../../../firebase/firestore/users";
+import {
+  getProducts,
+  deleteProduct,
+} from "../../../firebase/firestore/products";
 
 const ConfirmForm = ({
   action = "delete",
   setIsModalOpen,
-  selectedUserId,
+  selectedProductId,
   setData,
   setTableData,
   isLoading,
@@ -15,23 +18,23 @@ const ConfirmForm = ({
   showSuccessToast,
   showErrorToast,
 }) => {
-  const handleDeleteUser = async () => {
-    let users;
+  const handleDeleteProduct = async () => {
+    let products;
 
     try {
       setIsLoading(true);
-      deleteUser(selectedUserId);
-      users = await getUsers();
+      deleteProduct(selectedProductId);
+      products = await getProducts();
     } catch (error) {
       setIsLoading(false);
       setIsModalOpen(false);
       showErrorToast(error.message);
       return;
     }
-    setData(users);
-    setTableData(users);
+    setData(products);
+    setTableData(products);
     setIsLoading(false);
-    showSuccessToast("Delete user successfully");
+    showSuccessToast("Delete product successfully");
     setIsModalOpen(false);
   };
 
@@ -42,7 +45,7 @@ const ConfirmForm = ({
         <Button
           variant="danger"
           size="small"
-          onClick={handleDeleteUser}
+          onClick={handleDeleteProduct}
           isLoading={isLoading}
         >
           Yes

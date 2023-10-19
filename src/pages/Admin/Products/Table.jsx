@@ -52,8 +52,10 @@ const Table = ({ headers, data, handleClickUpdate, handleClickDelete }) => {
               {/* ... Your existing code ... */}
               <td>{item.id}</td>
               <td>{item.name}</td>
-              <td>{item.age}</td>
-              <td>{item.gender}</td>
+              <td>{item.brand}</td>
+              <td>{item.description}</td>
+              <td>{item.price}</td>
+              <td>{item.category}</td>
               <td>
                 <div className={styles["actions"]}>
                   <span className={styles["icon"]}>
