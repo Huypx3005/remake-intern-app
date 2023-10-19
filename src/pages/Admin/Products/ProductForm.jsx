@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-
+// Formik
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 import FormWrapper from "../../../components/FormWrapper/FormWrapper";
 import FormInput from "../../../components/FormInput/FormInput";
 import Button from "../../../components/Button/Button";
 import HorizontalLine from "../../../components/HorizontalLine/HorizontalLine";
+import Select from "../../../components/Select/Select";
 
 import {
   getProducts,
@@ -13,7 +16,6 @@ import {
   getProduct,
   updateProduct,
 } from "../../../firebase/firestore/products";
-import Select from "../../../components/Select/Select";
 
 const ProductForm = ({
   setIsModalOpen,
@@ -25,54 +27,17 @@ const ProductForm = ({
   showSuccessToast,
   showErrorToast,
 }) => {
-  const [formState, setFormState] = useState({
-    name: "",
-    brand: "",
-    description: "",
-    price: "",
-  });
-
   // gender select
   const options = [
+    { label: "Select a category", value: "" },
     { label: "Category 1", value: "cat 1" },
     { label: "Category 2", value: "cat 2" },
     { label: "Category 3", value: "cat 3" },
     { label: "Category 4", value: "cat 4" },
   ];
-  const [selectedOption, setSelectedOption] = useState("cat 1");
-  const handleSelectChange = (e) => {
-    setSelectedOption(e.target.value);
-  };
-
-  useEffect(() => {
-    if (selectedProductId) {
-      (async () => {
-        let product;
-        try {
-          setIsLoading(true);
-          product = await getProduct(selectedProductId);
-        } catch (error) {
-          setIsLoading(false);
-          showErrorToast(error.message);
-          return;
-        }
-        setSelectedOption(product?.category);
-        setFormState(product);
-        setIsLoading(false);
-      })();
-    }
-  }, []);
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormState((prevFormState) => ({
-      ...prevFormState,
-      [name]: value,
-    }));
-  };
 
   const handleSubmit = async () => {
-    const { name, brand, description, price } = formState;
+    const { name, brand, description, price, category } = formik.values;
 
     const err = "";
     if (err) {
@@ -90,7 +55,7 @@ const ProductForm = ({
           brand,
           description,
           price,
-          selectedOption
+          category
         );
         products = await getProducts();
       } catch (error) {
@@ -105,7 +70,7 @@ const ProductForm = ({
     } else {
       try {
         setIsLoading(true);
-        await addProduct(name, brand, description, price, selectedOption);
+        await addProduct(name, brand, description, price, category);
         products = await getProducts();
       } catch (error) {
         setIsLoading(false);
@@ -122,55 +87,113 @@ const ProductForm = ({
     setIsModalOpen(false);
   };
 
+  // Formik
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      brand: "",
+      description: "",
+      price: "",
+      category: "",
+    },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .max(15, "Must be 15 characters or less")
+        .required("Required"),
+      brand: Yup.string()
+        .max(20, "Must be 20 characters or less")
+        .required("Required"),
+      price: Yup.string().required("Required"),
+      category: Yup.string().required("Required"),
+    }),
+    onSubmit: handleSubmit,
+  });
+
+  useEffect(() => {
+    if (selectedProductId) {
+      (async () => {
+        let product;
+        try {
+          setIsLoading(true);
+          product = await getProduct(selectedProductId);
+        } catch (error) {
+          setIsLoading(false);
+          showErrorToast(error.message);
+          return;
+        }
+        formik.setValues({ ...product });
+        setIsLoading(false);
+      })();
+    }
+  }, []);
+
   return (
     <div>
       <FormWrapper>
         <FormInput
           type="text"
           name="name"
-          value={formState.name}
           placeholder="name ..."
           autoComplete="on"
           display="block"
-          onChange={handleInputChange}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.name}
         />
+        {formik.touched.name && formik.errors.name ? (
+          <div>{formik.errors.name}</div>
+        ) : null}
         <FormInput
           type="text"
           name="brand"
-          value={formState.brand}
           placeholder="brand ..."
           autoComplete="on"
           display="block"
-          onChange={handleInputChange}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.brand}
         />
+        {formik.touched.brand && formik.errors.brand ? (
+          <div>{formik.errors.brand}</div>
+        ) : null}
         <FormInput
           type="text"
           name="description"
-          value={formState.description}
           placeholder="description ..."
           autoComplete="on"
           display="block"
-          onChange={handleInputChange}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.description}
         />
         <FormInput
           type="number"
           name="price"
-          value={formState.price}
           placeholder="price ..."
           display="block"
-          onChange={handleInputChange}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.price}
         />
+        {formik.touched.price && formik.errors.price ? (
+          <div>{formik.errors.price}</div>
+        ) : null}
         <Select
+          name="category"
           options={options}
-          value={selectedOption}
-          onChange={handleSelectChange}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.category}
         />
+        {formik.touched.category && formik.errors.category ? (
+          <div>{formik.errors.category}</div>
+        ) : null}
         <HorizontalLine width={75} />
         <Button
           type="submit"
           variant="primary"
           size="medium"
-          onClick={handleSubmit}
+          onClick={formik.handleSubmit}
           isLoading={isLoading}
         >
           {selectedProductId ? "Update" : "Add"}

@@ -10,8 +10,6 @@ import QuillEditor from "../../components/QuillEditor/QuillEditor";
 import Button from "../../components/Button/Button";
 
 import ProfilePicture from "./ProfilePicture";
-
-// import { useAuth } from "../../contexts/authContext";
 import { logOut } from "../../features/auth/authSlice";
 
 import {

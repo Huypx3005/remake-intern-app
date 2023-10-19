@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../contexts/authContext"; // Adjust the import based on your project structure
+import { useSelector } from "react-redux";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import styles from "./ProfilePicture.module.css";
@@ -9,7 +9,7 @@ import { storage } from "../../firebase/firebase";
 import { showErrorToast, showSuccessToast } from "../../utils/showToasts";
 
 const ProfilePicture = () => {
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.auth);
   const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(() => {

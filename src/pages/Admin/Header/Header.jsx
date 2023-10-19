@@ -1,16 +1,15 @@
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import { IoMdNotifications } from "react-icons/io";
 import { RxDividerVertical } from "react-icons/rx";
 import { HiMiniUserCircle } from "react-icons/hi2";
 import { FaAngleDown } from "react-icons/fa";
 
-import { useAuth } from "../../../contexts/authContext";
-
 import styles from "./Header.module.css";
 
 const Header = () => {
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.auth);
 
   return (
     <header className={styles["header"]}>

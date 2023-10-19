@@ -14,7 +14,6 @@ import Loading from "./components/Loading/Loading";
 
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 
-// import { useAuth } from "./contexts/authContext";
 import { checkAuthState } from "./features/auth/authSlice";
 import Users from "./pages/Admin/Users/Users";
 import Products from "./pages/Admin/Products/Products";
