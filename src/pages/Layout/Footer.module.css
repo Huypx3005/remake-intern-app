@@ -1,0 +1,274 @@
+.container {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.content {
+	width: 85%;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+/* ----- Footer ----- */
+.proposition {
+	/* value-proposition */
+	/* height: 6.5rem; */
+	width: 100%;
+	padding: 1.5rem 0;
+	background: var(--primary-25, #fbeff2);
+}
+
+.vp {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.vp-text {
+	color: var(--primary-primary-600, #79043c);
+
+	font-size: 1rem;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 180%; /* 1.8rem */
+	text-transform: capitalize;
+}
+
+.utils {
+	background: var(--primary-primary-750, #3d021e);
+}
+
+.utils .content {
+	justify-content: flex-start;
+	gap: 18rem;
+	padding: 5rem;
+}
+
+.utils .title {
+	color: var(--white, #fff);
+	text-align: center;
+	/* Web/H4 */
+	font-size: 1.5rem;
+	font-style: normal;
+	font-weight: 700;
+	line-height: 140%; /* 2.1rem */
+	text-transform: capitalize;
+}
+
+.utils .list-items {
+	margin-top: 1rem;
+	display: flex;
+	width: 13.875rem;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.5rem;
+}
+
+.utils .item {
+	color: var(--white, #fff);
+	/* Web/Body - MD */
+	font-size: 1rem;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 180%; /* 1.8rem */
+	text-transform: capitalize;
+}
+
+.subscribe-box {
+	display: flex;
+	gap: 0.5rem;
+	padding: 1rem;
+	flex-wrap: wrap;
+}
+
+.subscribe-box {
+	display: flex;
+	align-items: center;
+}
+
+.subscribe-box input {
+	width: 30rem;
+	height: 3.5rem;
+	border: none;
+	outline: none;
+	border-bottom: 1px solid var(--gray-cbcbcb, #cbcbcb);
+	background-color: inherit;
+	color: inherit;
+	font-size: 1.25rem;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 180%; /* 2.25rem */
+}
+
+.subscribe-box button {
+	width: 6.5rem;
+	height: 3rem;
+	padding: 0.5rem 1rem;
+	border: 2px solid var(--white, #fff);
+	opacity: 0.4;
+	background-color: inherit;
+	color: var(--white);
+}
+
+.term-and-check {
+	width: 37.5rem;
+	height: 4.6875rem;
+	flex-shrink: 0;
+	color: var(--white);
+	display: flex;
+	gap: 0.5rem;
+}
+
+.term-and-check input {
+	width: 1rem;
+	height: 1rem;
+}
+
+.term-and-check .condition {
+	font-size: 0.875rem;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 180%; /* 1.575rem */
+	text-transform: capitalize;
+}
+
+.term-and-check .mb {
+	display: none;
+}
+
+.contacts {
+	background: var(--primary-primary-800, #280114);
+}
+
+.contacts .button {
+	display: inline-flex;
+	padding: 0.5rem 1rem 0.5rem 0rem;
+	justify-content: center;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.contacts-text {
+	color: var(--White, #fff);
+	/* Web/Button - LG */
+	font-size: 1rem;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 180%; /* 1.8rem */
+	text-transform: capitalize;
+}
+
+.social-media-icons {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.copyright {
+	display: inline-flex;
+	padding: 1rem 0;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 47.28125rem;
+	background: var(--primary-primary-900, #14010a);
+}
+
+.copyright-left {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.copyright-text {
+	color: var(--gray-cbcbcb, #cbcbcb);
+
+	font-size: 0.75rem;
+	font-style: normal;
+	font-weight: 600;
+	line-height: normal;
+	letter-spacing: 0.05rem;
+}
+
+.term-and-privacy {
+	display: flex;
+	align-items: flex-start;
+	gap: 1.5rem;
+
+	color: var(--neutral-gray-cbcbcb, #cbcbcb);
+
+	font-size: 0.75rem;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 180%; /* 1.35rem */
+	text-transform: capitalize;
+}
+/* End footer */
+
+@media (max-width: 800px) {
+	.content {
+		flex-wrap: wrap;
+	}
+
+	/* ----- Footer ----- */
+	.vp {
+		display: flex;
+		width: 9.5rem;
+		align-items: center;
+		gap: 0.375rem;
+	}
+
+	.vp-icon {
+		width: 1.75rem;
+		height: 1.75rem;
+	}
+
+	.utils .content {
+		padding: 1rem;
+		font-size: 0.875rem;
+		gap: 2rem;
+	}
+
+	.utils .content .left-section {
+		width: 100%;
+	}
+
+	.subscribe-box input {
+		width: 16rem;
+	}
+
+	.term-and-check {
+		width: 100%;
+		height: fit-content;
+		gap: 1rem;
+	}
+
+	.term-and-check .condition {
+		display: none;
+	}
+
+	.term-and-check .condition.mb {
+		display: block;
+	}
+
+	.contacts .button {
+		width: 100%;
+	}
+
+	.social-media-icons {
+		margin: 1rem auto;
+		gap: 2rem;
+	}
+
+	.copyright-left {
+		margin: auto;
+	}
+
+	.term-and-privacy {
+		gap: 5rem;
+		margin: auto;
+	}
+	/* End footer */
+}
