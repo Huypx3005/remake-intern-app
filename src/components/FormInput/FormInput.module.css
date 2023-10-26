@@ -1,7 +1,6 @@
 .form-input {
   font-size: 1.0625rem;
   height: 22px;
-  width: 330px;
   border: 1px solid #dddfe2;
   padding: 14px 16px;
   color: #1d2129;
@@ -19,4 +18,16 @@
 
 .block {
   display: block;
+}
+
+.small {
+  width: 130px;
+}
+
+.medium {
+  width: 330px;
+}
+
+.large {
+  width: 530px;
 }

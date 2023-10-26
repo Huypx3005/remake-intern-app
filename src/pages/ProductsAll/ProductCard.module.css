@@ -1,0 +1,70 @@
+.product-card {
+	display: flex;
+	width: 18rem;
+	padding-bottom: 0px;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+
+	border: 1px solid var(--gray-dfdfdf, #dfdfdf);
+	border-radius: 16px;
+	background: var(--White, #fff);
+}
+
+.product-card .image {
+	width: 100%;
+	/* height: 100%; */
+	height: 250px;
+	border-top-left-radius: 16px;
+	border-top-right-radius: 16px;
+}
+
+.product-card .text {
+	display: flex;
+	height: 8.5rem;
+	padding: 0rem 1rem;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 0.5rem;
+	align-self: stretch;
+}
+
+.product-card .name {
+	overflow: hidden;
+	color: var(--primary, #a10550);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	/* Web/H6 */
+	font-size: 1rem;
+	font-style: normal;
+	font-weight: 700;
+	line-height: 140%; /* 1.4rem */
+	text-transform: capitalize;
+	align-self: stretch;
+}
+
+.product-card .description {
+	overflow: hidden;
+	color: var(--black, #0c0c0c);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	/* Web/Body - XS */
+	font-size: 0.75rem;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 180%; /* 1.35rem */
+	text-transform: capitalize;
+	align-self: stretch;
+}
+.product-card .price {
+	color: var(--Black, #0c0c0c);
+	/* Web/Body - LG */
+	font-family: Open Sans;
+	font-size: 1.125rem;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 180%; /* 2.025rem */
+	text-transform: capitalize;
+	align-self: stretch;
+}

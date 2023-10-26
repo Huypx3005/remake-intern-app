@@ -11,7 +11,8 @@ li {
 }
 
 /* Set box sizing to border-box for all elements */
-* {
+html,
+body {
   box-sizing: border-box;
 }
 

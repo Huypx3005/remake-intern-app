@@ -17,8 +17,21 @@
 
 .filter {
   display: flex;
-  gap: 20px;
+  justify-content: center;
   align-items: center;
+}
+
+.filter-p {
+  margin-right: 20px;
+}
+
+.age-input {
+  display: flex;
+}
+
+.filter-button {
+  display: flex;
+  gap: 10px;
 }
 
 .users-table {

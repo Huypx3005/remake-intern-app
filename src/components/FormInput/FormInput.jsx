@@ -3,6 +3,7 @@ import styles from "./FormInput.module.css";
 const FormInput = ({
   ref,
   type = "text",
+  size = "medium",
   placeholder = "type something ...",
   autoComplete = "off",
   name,
@@ -21,6 +22,19 @@ const FormInput = ({
       break;
     case "inline":
       inputStyle.push(styles["inline"]);
+      break;
+    default:
+  }
+
+  switch (size) {
+    case "small":
+      inputStyle.push(styles["small"]);
+      break;
+    case "medium":
+      inputStyle.push(styles["medium"]);
+      break;
+    case "large":
+      inputStyle.push(styles["large"]);
       break;
     default:
   }

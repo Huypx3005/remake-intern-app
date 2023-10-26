@@ -1,12 +1,13 @@
 .container {
-  max-height: 400px;
-  overflow-y: auto;
+  max-height: 400px; /* Set a max height for the container to enable scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .table {
+  width: 100%;
+  border-collapse: collapse;
   text-align: center;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  overflow: auto;
 }
 
 .table-heading {

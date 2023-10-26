@@ -4,6 +4,7 @@ import FormWrapper from "../../../components/FormWrapper/FormWrapper";
 import FormInput from "../../../components/FormInput/FormInput";
 import Button from "../../../components/Button/Button";
 import HorizontalLine from "../../../components/HorizontalLine/HorizontalLine";
+import Select from "../../../components/Select/Select";
 
 import {
   getUsers,
@@ -12,6 +13,9 @@ import {
   updateUser,
 } from "../../../firebase/firestore/users";
 
+import { userFormValidator } from "../../../utils/validators";
+import { showSuccessToast, showErrorToast } from "../../../utils/showToasts";
+
 const UserForm = ({
   setIsModalOpen,
   selectedUserId,
@@ -19,14 +23,22 @@ const UserForm = ({
   setTableData,
   isLoading,
   setIsLoading,
-  showSuccessToast,
-  showErrorToast,
 }) => {
   const [formState, setFormState] = useState({
     name: "",
     age: "",
-    gender: "",
   });
+
+  // gender select
+  const options = [
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" },
+    { label: "Optional", value: "optional" },
+  ];
+  const [selectedOption, setSelectedOption] = useState("male");
+  const handleSelectChange = (e) => {
+    setSelectedOption(e.target.value);
+  };
 
   useEffect(() => {
     if (selectedUserId) {
@@ -40,6 +52,7 @@ const UserForm = ({
           showErrorToast(error.message);
           return;
         }
+        setSelectedOption(user?.gender);
         setFormState(user);
         setIsLoading(false);
       })();
@@ -55,36 +68,43 @@ const UserForm = ({
   };
 
   const handleSubmit = async () => {
-    const { name, age, gender } = formState;
+    const { name, age } = formState;
+
+    const err = userFormValidator(name, age);
+    if (err) {
+      showErrorToast(err);
+      return;
+    }
+
     let users;
     if (selectedUserId) {
       try {
         setIsLoading(true);
-        updateUser(selectedUserId, name, age, gender);
+        updateUser(selectedUserId, name, age, selectedOption);
         users = await getUsers();
+        setData(users);
+        setTableData(users);
+        setIsLoading(false);
+        showSuccessToast("Update user successfully");
       } catch (error) {
         setIsLoading(false);
         showErrorToast(error.message);
         return;
       }
-      setData(users);
-      setTableData(users);
-      setIsLoading(false);
-      showSuccessToast("Update user successfully");
     } else {
       try {
         setIsLoading(true);
-        await addUser(name, age, gender);
+        await addUser(name, age, selectedOption);
         users = await getUsers();
+        setData(users);
+        setTableData(users);
+        setIsLoading(false);
+        showSuccessToast("Add user successfully");
       } catch (error) {
         setIsLoading(false);
         showErrorToast(error.message);
         return;
       }
-      setData(users);
-      setTableData(users);
-      setIsLoading(false);
-      showSuccessToast("Add user successfully");
     }
 
     // close modal
@@ -111,13 +131,10 @@ const UserForm = ({
           display="block"
           onChange={handleInputChange}
         />
-        <FormInput
-          type="gender"
-          name="gender"
-          value={formState.gender}
-          placeholder="gender ..."
-          display="block"
-          onChange={handleInputChange}
+        <Select
+          options={options}
+          value={selectedOption}
+          onChange={handleSelectChange}
         />
         <HorizontalLine width={75} />
         <Button

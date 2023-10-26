@@ -1,34 +1,66 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./Profile.module.css";
-
-import { useAuth } from "../../contexts/authContext";
 
 import Loading from "../../components/Loading/Loading";
 import QuillEditor from "../../components/QuillEditor/QuillEditor";
 import Button from "../../components/Button/Button";
 
 import ProfilePicture from "./ProfilePicture";
+import { logOut } from "../../features/auth/authSlice";
+
+import {
+  checkDescIsExist,
+  getDescription,
+  updateDescription,
+  addDescription,
+} from "../../firebase/firestore/description";
+
+import { showSuccessToast, showErrorToast } from "../../utils/showToasts";
 
 const Profile = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [description, setDescription] = useState("");
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const [loading, setLoading] = useState(false);
+  // const { logOut, user } = useAuth();
 
-  const { logOut, user } = useAuth();
+  const [description, setDescription] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (await checkDescIsExist(user.uid)) {
+          setLoading(true);
+          const description = await getDescription(user.uid);
+          setDescription(description.content);
+        } else {
+          await addDescription(user.uid);
+        }
+      } catch (error) {
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   const handleSignOut = async () => {
     try {
-      setIsLoading(true);
-      await logOut();
+      setLoading(true);
+      await dispatch(logOut()).unwrap();
+      showSuccessToast("Sign out successfully");
       // Handle successful sign-out, e.g., redirect or update UI
-      setIsLoading(true);
       navigate("/login");
     } catch (error) {
-      setIsLoading(false);
+      setLoading(false);
       // Handle sign-out error, e.g., display an error message
-      console.error("Sign-out error:", error.message);
+      showErrorToast(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -36,11 +68,29 @@ const Profile = () => {
     setDescription(value);
   };
 
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      await updateDescription(user.uid, description);
+      // Handle successful sign-out, e.g., redirect or update UI
+      showSuccessToast("Save Success");
+    } catch (error) {
+      setLoading(false);
+      // Handle sign-out error, e.g., display an error message
+      showErrorToast(error.message)
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className={styles["profile-container"]}>
-      {isLoading && <Loading />}
+      {loading && <Loading />}
       <div className={styles["profile-header"]}>
-        <h2>Welcome, {user?.email}!</h2>
+        <h2>Welcome, {user && user.email}!</h2>
+        <Link to="/admin">
+          <Button size="small">Admin</Button>
+        </Link>
         <Button onClick={handleSignOut} size="small">
           Sign Out
         </Button>
@@ -58,6 +108,9 @@ const Profile = () => {
               dangerouslySetInnerHTML={{ __html: description }}
             />
           </div>
+          <Button size="very-small" onClick={handleSave}>
+            Save
+          </Button>
         </div>
       </div>
     </div>

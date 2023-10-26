@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import styles from "./Users.module.css";
@@ -16,6 +15,7 @@ import ConfirmForm from "./ConfirmForm";
 import Table from "./Table";
 
 import { getUsers } from "../../../firebase/firestore/users";
+import { showErrorToast } from "../../../utils/showToasts";
 
 const Users = () => {
   const [data, setData] = useState([]); // data get from api
@@ -28,14 +28,18 @@ const Users = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   //------  for filter ----------
-  const [selectedOption, setSelectedOption] = useState("name"); // name is default value of select
-  const [filterValue, setFilterValue] = useState("");
+  const [selectedGender, setSelectedGender] = useState("male"); // name is default value of select
+  const [inputName, setInputName] = useState("");
+  const [inputAgeFrom, setInputAgeFrom] = useState("");
+  const [inputAgeTo, setInputAgeTo] = useState("");
 
   const tableHeaders = ["User ID", "Name", "Age", "Gender", "Action"];
 
   const options = [
-    { label: "Name", value: "name" },
-    { label: "Gender", value: "gender" },
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" },
+    { label: "Optional", value: "optional" },
+    { label: "none", value: "none" },
   ];
 
   // ----- END filter -----------
@@ -46,45 +50,67 @@ const Users = () => {
       try {
         setIsLoading(true);
         users = await getUsers();
+        setData(users);
+        setTableData(users);
+        setIsLoading(false);
       } catch (e) {
         setIsLoading(false);
         showErrorToast(e.message);
         return;
+      } finally {
+        setIsLoading(false);
       }
-      setData(users);
-      setTableData(users);
-      setIsLoading(false);
     })();
   }, []);
 
   const handleSelectChange = (e) => {
-    setSelectedOption(e.target.value);
+    setSelectedGender(e.target.value);
   };
 
   const handleClickFilter = () => {
     setIsLoading(true);
-    let filteredData = [];
-    switch (selectedOption) {
-      case "name":
-        filteredData = data.filter((item) =>
-          item.name.toLowerCase().includes(filterValue.toLowerCase())
-        );
-        setTableData(filteredData);
-        break;
-      case "gender":
-        filteredData = data.filter((item) =>
-          item.gender.toLowerCase().includes(filterValue.toLowerCase())
-        );
-        setTableData(filteredData);
-        break;
-      default:
-        break;
+
+    // Create a copy of the original data
+    let filteredData = [...data];
+
+    // Filter by name
+    if (inputName) {
+      filteredData = filteredData.filter((item) =>
+        item.name.toLowerCase().includes(inputName.toLowerCase())
+      );
     }
+
+    // Filter by gender
+    if (selectedGender !== "none") {
+      filteredData = filteredData.filter(
+        (item) => item.gender.toLowerCase() === selectedGender.toLowerCase()
+      );
+    }
+
+    // Filter by age
+    if (inputAgeFrom) {
+      filteredData = filteredData.filter(
+        (item) => Number(item.age) >= Number(inputAgeFrom)
+      );
+    }
+
+    if (inputAgeTo) {
+      filteredData = filteredData.filter(
+        (item) => Number(item.age) <= Number(inputAgeTo)
+      );
+    }
+
+    // Apply other filters as needed
+
+    // Update the table data
+    setTableData(filteredData);
     setIsLoading(false);
   };
 
   const clearFilter = () => {
-    setFilterValue("");
+    setInputName("");
+    setInputAgeFrom("");
+    setInputAgeTo("");
     setTableData(data);
   };
 
@@ -106,24 +132,6 @@ const Users = () => {
     setIsModalOpen(true);
   };
 
-  const showSuccessToast = (message) => {
-    toast.success(message || "successful", {
-      data: {
-        title: "Success toast",
-        text: "This is a success message",
-      },
-    });
-  };
-
-  const showErrorToast = (message) => {
-    toast.error(message || "Error", {
-      data: {
-        title: "Error toast",
-        text: "This is an error message",
-      },
-    });
-  };
-
   return (
     <>
       {isLoading && <Loading />}
@@ -134,31 +142,54 @@ const Users = () => {
             Add user+
           </Button>
           <span className={styles["filter"]}>
+            <span className={styles["filter-p"]}>Filter:</span>
+
             <FormInput
+              placeholder="name"
+              size="small"
               type="text"
-              value={filterValue}
-              onChange={(e) => setFilterValue(e.target.value)}
+              value={inputName}
+              onChange={(e) => setInputName(e.target.value)}
             />
-            <span>Filter by:</span>
             <Select
               options={options}
-              value={selectedOption}
+              value={selectedGender}
               onChange={handleSelectChange}
             />
-            <Button
-              size="very-small"
-              onClick={handleClickFilter}
-              isLoading={isLoading}
-            >
-              Filter
-            </Button>
-            <Button
-              size="very-small"
-              onClick={clearFilter}
-              isLoading={isLoading}
-            >
-              Clear filter
-            </Button>
+
+            <span className={styles["age-input"]}>
+              <FormInput
+                type="number"
+                size="small"
+                value={inputAgeFrom}
+                placeholder="age from"
+                onChange={(e) => setInputAgeFrom(e.target.value)}
+              />
+              <FormInput
+                size="small"
+                type="number"
+                value={inputAgeTo}
+                placeholder=" age to"
+                onChange={(e) => setInputAgeTo(e.target.value)}
+              />
+            </span>
+
+            <span className={styles["filter-button"]}>
+              <Button
+                size="very-small"
+                onClick={handleClickFilter}
+                isLoading={isLoading}
+              >
+                Filter
+              </Button>
+              <Button
+                size="very-small"
+                onClick={clearFilter}
+                isLoading={isLoading}
+              >
+                Clear filter
+              </Button>
+            </span>
           </span>
         </div>
         <div className={styles["users-table"]}>
@@ -179,8 +210,6 @@ const Users = () => {
               selectedUserId={selectedUserId}
               isLoading={isLoading}
               setIsLoading={setIsLoading}
-              showSuccessToast={showSuccessToast}
-              showErrorToast={showErrorToast}
             />
           ) : (
             <ConfirmForm
@@ -191,12 +220,9 @@ const Users = () => {
               setTableData={setTableData}
               isLoading={isLoading}
               setIsLoading={setIsLoading}
-              showSuccessToast={showSuccessToast}
-              showErrorToast={showErrorToast}
             />
           )}
         </Modal>
-        <ToastContainer />
       </div>
     </>
   );

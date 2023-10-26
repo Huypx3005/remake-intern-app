@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../contexts/authContext"; // Adjust the import based on your project structure
+import { useSelector } from "react-redux";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import styles from "./ProfilePicture.module.css";
 
 import { storage } from "../../firebase/firebase";
 
+import { showErrorToast, showSuccessToast } from "../../utils/showToasts";
+
 const ProfilePicture = () => {
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.auth);
   const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(() => {
@@ -29,10 +31,10 @@ const ProfilePicture = () => {
                 setImageUrl(url);
               })
               .catch((e) => {
-                console.log(e.message);
+                showErrorToast(e.message);
               });
           } else {
-            console.error("Error fetching profile picture:", error.message);
+            showErrorToast(error.message);
           }
         });
     }
@@ -42,12 +44,18 @@ const ProfilePicture = () => {
     const file = e.target.files[0];
     if (file) {
       // Upload the new profile picture to Firebase Storage
-      const imageRef = ref(storage, `profilePictures/${user.uid}`);
-      uploadBytes(imageRef, file).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((url) => {
-          setImageUrl(url);
+      try {
+        const imageRef = ref(storage, `profilePictures/${user.uid}`);
+        uploadBytes(imageRef, file).then((snapshot) => {
+          getDownloadURL(snapshot.ref).then((url) => {
+            setImageUrl(url);
+            showSuccessToast("Upload Success");
+          });
         });
-      });
+      } catch (err) {
+        showErrorToast(err.message);
+        return;
+      }
     }
   };
 

@@ -1,11 +1,10 @@
-import { Navigate, Outlet } from "react-router-dom";
-
-import { fetchUser } from "../utils/fetchUser";
+import { Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ProtectedRoutes = ({ children }) => {
-  const user = fetchUser();
+  const { user } = useSelector((state) => state.auth);
 
-  return user ? <Outlet /> : <Navigate to="/login" />;
+  return user ? children : <Navigate to="/login" />;
 };
 
 export default ProtectedRoutes;

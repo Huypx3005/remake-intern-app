@@ -1,0 +1,46 @@
+.container {
+  max-height: 400px; /* Set a max height for the container to enable scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.table-heading {
+  background-color: #eff4fa;
+  height: 50px;
+  line-height: 50px;
+  color: #8f9bb3;
+}
+.th {
+  width: 18vw;
+}
+
+.table-row {
+  font-size: 0.8rem;
+  color: #222b45;
+  background-color: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.table-row > td {
+  height: 40px;
+  width: 18;
+  vertical-align: middle;
+}
+
+.actions {
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  color: #8f9bb3;
+}
+
+.icon {
+  cursor: pointer;
+}
